@@ -53,8 +53,6 @@ int main(void){
 				//convert string of ASCII characters into an integer that represents the new lower limit
 				else if (temp=='\n'||i==5){
 					temp_floor=atoi(new_range);
-					n=sprintf((char *)buffer,"\r\n%d",temp_floor<=9950);
-					USART_Write(USART2,buffer,n);
 					if(temp_floor>=50 && temp_floor<=9950){
 						floor=temp_floor;
 						n=sprintf((char *)buffer,"\r\nNew lower limit is:%d",floor);
@@ -62,7 +60,7 @@ int main(void){
 						break;
 					}
 					else{
-						n=sprintf((char *)buffer,"Invalid input!");
+						n=sprintf((char *)buffer,"Invalid input. Not within range!");
 						USART_Write(USART2,buffer,n);
 						i=0;
 					}
