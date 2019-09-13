@@ -29,7 +29,9 @@ int main(void){
 	LED_Init();
 	UART2_Init();
 	TIM_Init(TIM2);
-	n=sprintf((char *)buffer,"\r\n%d");
+	int *ptr= (int*)TIM2_BASE;
+	ptr*|=0x1;
+	n=sprintf((char *)buffer,"%d",TIM2->CR1);
 	USART_Write(USART2,buffer,n);
 	n=sprintf((char *)buffer,"Lower limit is %d.\r\nUpper limit is %d.\r\n \
 	Do you wish to change these values (y/n)?",floor,floor+100);
