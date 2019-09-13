@@ -9,6 +9,6 @@ void TIM_Init(TIM_TypeDef * TIMx){
 	TIMx->SMCR &=0xfffffff0; //disable slave mode
 	TIMx->CCER &=0xfff4;//disable capture and compare, set as input and capture event on rising edge
 	TIMx->ARR=0xFFFFFFFF; //counter will count from 0 up until it reaches 2^31-1
-	TIMx->CCER |=TIM_CCER_CCIE; //enable timer channel 1
+	TIMx->CCER |=TIM_CCER_CC1E; //enable timer channel 1
 	TIMx->CR1|=1; //start timer
 }
