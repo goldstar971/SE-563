@@ -25,11 +25,12 @@ int main(void){
 	int bins[101];
 	char overflow=0;
 	uint8_t temp;
-
 	System_Clock_Init(); // Switch System Clock = 80 MHz
 	LED_Init();
 	UART2_Init();
 	TIM_Init(TIM2);
+	n=sprintf((char *)buffer,"\r\n%d");
+	USART_Write(USART2,buffer,n);
 	n=sprintf((char *)buffer,"Lower limit is %d.\r\nUpper limit is %d.\r\n \
 	Do you wish to change these values (y/n)?",floor,floor+100);
 	USART_Write(USART2,buffer,n);
@@ -43,43 +44,44 @@ int main(void){
 					n=sprintf((char *)buffer,"\r\nEnter new value for lower limit in the range 50-9950: ");
 					USART_Write(USART2,buffer,n);
 				}
-				temp=USART_Read(USART2);
-				//if non-numeric, non enter character given, restart input process
-				if((temp<0x30 || temp>0x39)&&(temp!='\n')){  
-					n=sprintf((char *)buffer,"Invalid input!");
-					USART_Write(USART2,buffer,n);
-					i=0;
-				}
-				//convert string of ASCII characters into an integer that represents the new lower limit
-				else if (temp=='\n'||i==5){
+				else if(temp=='\r'||i==4){
 					temp_floor=atoi(new_range);
-					if(temp_floor>=50 && temp_floor<=9950){
+					if(temp_floor>49 && temp_floor<=9950){
 						floor=temp_floor;
-						n=sprintf((char *)buffer,"\r\nNew lower limit is:%d",floor);
+						n=sprintf((char *)buffer,"\r\nNew lower limit is: %d",floor);
 						USART_Write(USART2,buffer,n);
 						break;
 					}
 					else{
-						n=sprintf((char *)buffer,"Invalid input. Not within range!");
+						n=sprintf((char *)buffer,"\r\nInvalid input. Not within range!");
 						USART_Write(USART2,buffer,n);
-						i=0;
+						i=-1;
 					}
 				}
+				temp=USART_Read(USART2);
+				//if non-numeric, non enter character given, restart input process
+				if((temp<0x30 || temp>0x39)&&(temp!='\r')){ 
+					n=sprintf((char *)buffer,"Invalid input!");
+					USART_Write(USART2,buffer,n);
+					i=-1;
+				}
+				//convert string of ASCII characters into an integer that represents the new lower limit
+				
 				else{
 					new_range[i]=temp;
 				}
-				n=sprintf((char *)buffer,"\r\n%d",atoi(new_range));
-				USART_Write(USART2,buffer,n);
+				//n=sprintf((char *)buffer,"\r\n%d",atoi(new_range));
+				//USART_Write(USART2,buffer,n);
 			}
 		}
 		temp=0;
 		//display prompt and then wait until enter is pushed
-		n=sprintf((char *)buffer,"\r\nPress Enter to begin\r\n");
+		n=sprintf((char *)buffer,"\r\nPress Enter to begin");
 		USART_Write(USART2,buffer,n);
-		while(temp!='\n'){
+		while(temp!='\r'){
 			temp=USART_Read(USART2);
 		}
-		n=sprintf((char *)buffer,"count=%d",TIM2->CCR1);
+		n=sprintf((char *)buffer,"count=%d",TIM2->CR1);
 		USART_Write(USART2,buffer,n);
 		measurement_count=0;
 		overflow=0;
