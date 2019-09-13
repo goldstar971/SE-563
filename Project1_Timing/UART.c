@@ -10,7 +10,7 @@
 void UART2_Init(void) {
 	// Enable the clock of USART 1 & 2
 	RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;  // Enable USART 2 clock		
-	
+	 
 	// Select the USART1 clock source
 	// 00: PCLK selected as USART2 clock
 	// 01: System clock (SYSCLK) selected as USART2 clock
