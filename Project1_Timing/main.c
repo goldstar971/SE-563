@@ -26,7 +26,6 @@ int main(void){
 	int measurement=0;
 	uint8_t temp;
 	System_Clock_Init(); // Switch System Clock = 80 MHz
-	LED_Init();
 	UART2_Init();
 	TIM_Init(TIM2);
 	n=sprintf((char *)buffer,"Lower limit is %d.\r\nUpper limit is %d.\r\n \
@@ -88,14 +87,17 @@ int main(void){
 		while (measurement_count<1000){
 			if(TIM2->SR&2){
 				//need to have one rising edge to occur to actually time the pulses
-				if(measurement_count==0){old_count=TIM2->CCR1;}
+				if(measurement_count==0){
+					old_count=TIM2->CCR1;
+					continue;
+				}
 				else{
 					//for the unlikely event the counter overflows mid measurement.
 					if(old_count>(2^31-1)){
 						overflow=1;//increment overflow counter
 					}
 					new_count=TIM2->CCR1; //get value of counter at most recent rising edge 
-					measurement= (2^31-1)*overflow+new_count-old_count+1;
+					measurement= (2^31-1)*overflow+new_count-old_count;
 					if(measurement>=floor && measurement<=floor+100){
 						bins[measurement-floor]++; //increment correct bin
 					}
@@ -104,14 +106,11 @@ int main(void){
 				measurement_count++;	 
 			} 
 		}	
-
-		
 		//sort measurements into bins
-		
 		for(int i=0;i<101;i++){
 			//if bin has non zero count
 			if(bins[i]>=0){
-				n=sprintf((char *)buffer,"%d/s%d",floor+i,bins[i]);
+				n=sprintf((char *)buffer,"%d%s%d\r\n",floor+i,"  ",bins[i]);
 				USART_Write(USART2,buffer,n);
 			}
 			bins[i]=0; //clear array in case we want to run again
