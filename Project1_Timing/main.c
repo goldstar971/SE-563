@@ -5,8 +5,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
-
+#include "stm32l476xx.h"
+#include "SysClock.h"
+#include "UART.h"
+#include "timer.h"
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#define max_timer_count 2147483647
 char RxComByte = 0;
 uint8_t buffer[BufferSize];
 
@@ -91,11 +97,11 @@ int main(void){
 				}
 				else{
 					//for the unlikely event the counter overflows mid measurement.
-					if(old_count>(2^31-1)){
+					if(old_count>max_timer_count){
 						overflow=1;//increment overflow counter
 					}
 					new_count=TIM2->CCR1; //get value of counter at most recent rising edge 
-					measurement= (2^31-1)*overflow+new_count-old_count;
+					measurement=max_timer_count*overflow+new_count-old_count;
 					if(measurement>=floor && measurement<=floor+100){
 						bins[measurement-floor]++; //increment correct bin
 					}
@@ -107,7 +113,7 @@ int main(void){
 		//sort measurements into bins
 		for(int i=0;i<101;i++){
 			//if bin has non zero count
-			if(bins[i]>=0){
+			if(bins[i]>0){
 				n=sprintf((char *)buffer,"%d%s%d\r\n",floor+i,"  ",bins[i]);
 				USART_Write(USART2,buffer,n);
 			}
