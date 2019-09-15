@@ -25,9 +25,9 @@ int main(void){
 	int floor=950;
 	int temp_floor=0;
 	char new_range[5]={0};
-	int measurement_count=0;
+	int measurement_count;
 	int bins[101];
-	char overflow=0;
+	char overflow;
 	int measurement=0;
 	uint8_t temp;
 	System_Clock_Init(); // Switch System Clock = 80 MHz
@@ -88,12 +88,11 @@ int main(void){
 		overflow=0;
 		//begin measurements
 		TIM2->SR &= ~TIM_SR_CC1IF; //clear capture event flag
-		while (measurement_count<1000){
+		while (measurement_count<=1000){//get 1000 measurements
 			if(TIM2->SR&2){
 				//need to have one rising edge to occur to actually time the pulses
 				if(measurement_count==0){
 					old_count=TIM2->CCR1;
-					continue;
 				}
 				else{
 					//for the unlikely event the counter overflows mid measurement.
@@ -123,9 +122,9 @@ int main(void){
 		USART_Write(USART2,buffer,n);
 		answer=USART_Read(USART2);
 		if(answer=='y'){
-			n=sprintf((char *)buffer,"\r\nChange limits?\r\n");
+			n=sprintf((char *)buffer,"\r\nChange limits?(y/n)\r\n");
 			USART_Write(USART2,buffer,n);
-			answer=USART_Read(USART2); //if answer is y then if clause will handle it
+			answer=USART_Read(USART2); //if answer is y tnhen if clause will handle it
 		}
 		else{
 			break;

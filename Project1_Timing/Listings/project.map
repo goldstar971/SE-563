@@ -639,7 +639,7 @@ Image Symbol Table
     USART_Init                               0x08000a69   Thumb Code   168  uart.o(i.USART_Init)
     USART_Read                               0x08000b1d   Thumb Code    20  uart.o(i.USART_Read)
     USART_Write                              0x08000b31   Thumb Code    64  uart.o(i.USART_Write)
-    main                                     0x08000b71   Thumb Code   608  main.o(i.main)
+    main                                     0x08000b71   Thumb Code   602  main.o(i.main)
     _get_lc_ctype                            0x08000ebd   Thumb Code    44  lc_ctype_c.o(locale$$code)
     _fp_init                                 0x08000ee9   Thumb Code    10  fpinit.o(x$fpl$fpinit)
     __fplib_config_fpu_vfp                   0x08000ef1   Thumb Code     0  fpinit.o(x$fpl$fpinit)
@@ -795,14 +795,14 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
-       842        228         84          0        256     298418   main.o
+       842        234         84          0        256     298406   main.o
        132         42        392          0       1536        832   startup_stm32l476xx.o
        388          8          0          0          0        620   sysclock.o
        136         12          0          0          0       1191   timer.o
        464         32          0          0          0       3345   uart.o
 
     ----------------------------------------------------------------------
-      1964        322        492          0       1792     304406   Object Totals
+      1964        328        492          0       1792     304394   Object Totals
          0          0         16          0          0          0   (incl. Generated)
          2          0          0          0          0          0   (incl. Padding)
 
@@ -873,9 +873,9 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-      3436        388        764          0       1888     304782   Grand Totals
-      3436        388        764          0       1888     304782   ELF Image Totals
-      3436        388        764          0          0          0   ROM Totals
+      3436        394        764          0       1888     304770   Grand Totals
+      3436        394        764          0       1888     304770   ELF Image Totals
+      3436        394        764          0          0          0   ROM Totals
 
 ==============================================================================
 
