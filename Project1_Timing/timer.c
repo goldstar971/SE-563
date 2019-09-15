@@ -11,6 +11,14 @@ void TIM_Init(TIM_TypeDef * TIMx){
 	TIMx-> PSC |=0x4f; //set prescale clock to 1 MHZ
 	TIMx->CCER |=TIM_CCER_CC1E; //enable timer channel 1
 	TIMx->EGR |=0x1;//create update event, loading prescaler
-	TIMx->CR1|=(TIM_CR1_CEN; //start timer 
+	TIMx->CR1|=TIM_CR1_CEN; //start timer 
 	
+}
+
+void TIM_GPIO_Init(GPIO_TypeDef *GPIOx){
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN ; //enable clock for GPIO port A
+	GPIOx->MODER &=0xFFFFFFFC; // clear mode register for PA0
+	GPIOx->MODER|=0x2; //configure PA0 (pin23) mode as alternative function
+	GPIOx->AFR[0]&=0xFFFFFFF0; //clear alternative function register for PAO
+	GPIOx->AFR[0]|=0x1; //configure PAO with alt function 1 (CH1_tim2)	
 }
