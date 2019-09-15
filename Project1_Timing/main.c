@@ -78,12 +78,10 @@ int main(void){
 		while(temp!='\r'){
 			temp=USART_Read(USART2);
 		}
-		n=sprintf((char *)buffer,"count=%d",TIM2->CNT);
-		USART_Write(USART2,buffer,n);
 		measurement_count=0;
 		overflow=0;
 		//begin measurements
-		TIM2->SR = ~TIM_SR_CC1IF; //clear capture event flag
+		TIM2->SR &= ~TIM_SR_CC1IF; //clear capture event flag
 		while (measurement_count<1000){
 			if(TIM2->SR&2){
 				//need to have one rising edge to occur to actually time the pulses
