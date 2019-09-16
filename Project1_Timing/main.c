@@ -9,10 +9,11 @@
 #include "SysClock.h"
 #include "UART.h"
 #include "timer.h"
+#include "POST.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#define max_timer_count 2147483647
+
 char RxComByte = 0;
 uint8_t buffer[BufferSize];
 
@@ -33,7 +34,8 @@ int main(void){
 	System_Clock_Init(); // Switch System Clock = 80 MHz
 	UART2_Init();
 	TIM_Init(TIM2);
-	TIM_GPIO_Init(GPIOA); 
+	TIM_GPIO_Init(GPIOA);
+	run_power_test();
 	n=sprintf((char *)buffer,"Lower limit is %d.\r\nUpper limit is %d.\r\n \
 	Do you wish to change these values (y/n)?",floor,floor+100);
 	USART_Write(USART2,buffer,n);
