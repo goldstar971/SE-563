@@ -36,6 +36,8 @@ void SysTick_Initialize(uint32_t ticks) {
  SysTick->CTRL |= SysTick_CTRL_CLKSOURCE_Msk;
  // Enables SysTick interrupt, 1 = Enable, 0 = Disable
  SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;
+ // Enable SysTick
+ SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
 }
 
 /**
@@ -47,9 +49,9 @@ void failed_test() {
 	
 	SysTick->CTRL = 0; // Disable SysTick
 	Red_LED_On();
-	message = sprintf((char *)buff, "    Test Failed!                   /r/n");
+	message = sprintf((char *)buff, "    Test Failed!                   \r\n");
 	USART_Write(USART2, buff, message);
-	message = sprintf((char *)buff, "    Retry POST? (Y/N)              /r/n");
+	message = sprintf((char *)buff, "    Retry POST? (Y/N)              \r\n");
 	USART_Write(USART2, buff, message);
 	
 	while(1) {
@@ -57,29 +59,29 @@ void failed_test() {
 		response = USART_Read(USART2);
 		
 		if(response == 'y' || response == 'Y') {
-			message = sprintf((char *)buff, "    Testing again...               /r/n");
+			message = sprintf((char *)buff, "    Testing again...               \r\n");
 			USART_Write(USART2, buff, message);
-			message = sprintf((char *)buff, "-----------------------------------/r/n");
+			message = sprintf((char *)buff, "-----------------------------------\r\n");
 			USART_Write(USART2, buff, message);
 			Red_LED_Off();
-			failed = 0;
 			pulse_test();
-			break;
+			return;
 		}
 		else if (response == 'n' || response == 'N') {
-			message = sprintf((char *)buff, "    Locking down...                /r/n");
+			message = sprintf((char *)buff, "    Locking down...                \r\n");
 			USART_Write(USART2, buff, message);
-			message = sprintf((char *)buff, "    Restart device to unlock.      /r/n");
+			message = sprintf((char *)buff, "    Restart device to unlock.      \r\n");
 			USART_Write(USART2, buff, message);
-			message = sprintf((char *)buff, "-----------------------------------/r/n");
+			message = sprintf((char *)buff, "-----------------------------------\r\n");
 			USART_Write(USART2, buff, message);
 			
 			while(1) { // Lock Down the Program
 			}
 		}
 		else {
-			message = sprintf((char *)buff, "    Invalid character              /r/n");
-			message = sprintf((char *)buff, "    Please try again.              /r/n/n");
+			message = sprintf((char *)buff, "    Invalid character              \r\n");
+			USART_Write(USART2, buff, message);
+			message = sprintf((char *)buff, "    Please try again.              \r\n\n");
 			USART_Write(USART2, buff, message);
 		}
 	}
@@ -91,11 +93,11 @@ void failed_test() {
 void successful_test() {
 	SysTick->CTRL = 0; // Disable SysTick
 	Green_LED_On();
-	message = sprintf((char *)buff, "    Test Successful!               /r/n");
+	message = sprintf((char *)buff, "    Test Successful!               \r\n");
 	USART_Write(USART2, buff, message);
-	message = sprintf((char *)buff, "    Continuing with main program.../r/n");
+	message = sprintf((char *)buff, "    Continuing with main program...\r\n");
 	USART_Write(USART2, buff, message);
-	message = sprintf((char *)buff, "-----------------------------------/r/n/n");
+	message = sprintf((char *)buff, "-----------------------------------\r\n\n");
 	USART_Write(USART2, buff, message);
 }
 
@@ -116,9 +118,10 @@ void SysTick_Handler(void) {
  * Tests for a pulse specified in header file. Identical to how measurements are taken in
  * main program.
  */
-void pulse_test() {	
+void pulse_test() {
 	hunMS = 0;
-  SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;// Enable SysTick
+	failed = 0;
+	SysTick_Initialize(1000000);
 	
 	TIM2->SR &= ~TIM_SR_CC1IF; //clear capture event flag
 	old_count=TIM2->CCR1; //need to have one rising edge to occur to actually time the pulses
@@ -144,22 +147,20 @@ void pulse_test() {
  * Starts a POST. Once started, the test must pass in order to continue with
  * the rest of the program.
  */
-void run_power_test() {
-	SysTick_Initialize(1000000);
-	
-	message = sprintf((char *)buff, "-----------------------------------/r/n");
+void run_power_test() {	
+	message = sprintf((char *)buff, "-----------------------------------\r\n");
 	USART_Write(USART2, buff, message);
-	message = sprintf((char *)buff, "    Power On Self Test             /r/n");
+	message = sprintf((char *)buff, "    Power On Self Test             \r\n");
 	USART_Write(USART2, buff, message);
-	message = sprintf((char *)buff, "-----------------------------------/r/n/n");
+	message = sprintf((char *)buff, "-----------------------------------\r\n\n");
 	USART_Write(USART2, buff, message);
-	message = sprintf((char *)buff, "    Testing Now...                 /r/n");
+	message = sprintf((char *)buff, "    Testing Now...                 \r\n");
 	USART_Write(USART2, buff, message);
-	message = sprintf((char *)buff, "    Looking for a pulse under:     /r/n");
+	message = sprintf((char *)buff, "    Looking for a pulse under:     \r\n");
 	USART_Write(USART2, buff, message);
-	message = sprintf((char *)buff, "    %dMS                           /r/n", MAX_TIME);
+	message = sprintf((char *)buff, "    %dMS                           \r\n", MAX_TIME);
 	USART_Write(USART2, buff, message);
-	message = sprintf((char *)buff, "-----------------------------------/r/n");
+	message = sprintf((char *)buff, "-----------------------------------\r\n");
 	USART_Write(USART2, buff, message);
 	
 	pulse_test();

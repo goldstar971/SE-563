@@ -2,14 +2,8 @@
 #include "SysClock.h"
 #include "UART.h"
 #include "timer.h"
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include "stm32l476xx.h"
-#include "SysClock.h"
-#include "UART.h"
-#include "timer.h"
 #include "POST.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
