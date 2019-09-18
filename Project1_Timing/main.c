@@ -27,9 +27,10 @@ int main(void){
 	uint8_t temp;
 	System_Clock_Init(); // Switch System Clock = 80 MHz
 	UART2_Init();
-	TIM_Init(TIM2);
 	TIM_GPIO_Init(GPIOA);
+	TIM_Init(TIM2);
 	run_power_test();
+	
 	n=sprintf((char *)buffer,"Lower limit is %d.\r\nUpper limit is %d.\r\n \
 	Do you wish to change these values (y/n)?",floor,floor+100);
 	USART_Write(USART2,buffer,n);
@@ -83,7 +84,7 @@ int main(void){
 		measurement_count=0;
 		overflow=0;
 		//begin measurements
-		TIM2->SR &= ~TIM_SR_CC1IF; //clear capture event flag
+		TIM2->SR &= ~TIM_SR_UIF; //clear capture event flag
 		while (measurement_count<=1000){//get 1000 measurements
 			if(TIM2->SR&2){
 				//need to have one rising edge to occur to actually time the pulses

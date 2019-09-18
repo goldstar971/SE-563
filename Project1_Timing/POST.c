@@ -123,7 +123,7 @@ void pulse_test() {
 	failed = 0;
 	SysTick_Initialize(1000000);
 	
-	TIM2->SR &= ~TIM_SR_CC1IF; //clear capture event flag
+	
 	old_count=TIM2->CCR1; //need to have one rising edge to occur to actually time the pulses
 	
 	while(!failed) {
@@ -136,6 +136,7 @@ void pulse_test() {
 			measurement=max_timer_count*overflow+new_count-old_count;
 			if(measurement <= MAX_TIME){
 				successful_test();
+				return;
 			}
 			old_count=new_count;
 		} 
@@ -147,7 +148,10 @@ void pulse_test() {
  * Starts a POST. Once started, the test must pass in order to continue with
  * the rest of the program.
  */
-void run_power_test() {	
+void run_power_test() {
+
+	LED_Init();
+	
 	message = sprintf((char *)buff, "-----------------------------------\r\n");
 	USART_Write(USART2, buff, message);
 	message = sprintf((char *)buff, "    Power On Self Test             \r\n");
