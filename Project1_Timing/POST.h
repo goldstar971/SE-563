@@ -1,7 +1,7 @@
 #include "stm32l476xx.h"
 #include "LED.h"
 
-#define MAX_TIME 100
+#define MAX_TIME 100000
 #define TEST_DURATION 500 // Hundred MS
 #define max_timer_count 2147483647
 

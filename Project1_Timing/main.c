@@ -44,18 +44,22 @@ int main(void){
 					n=sprintf((char *)buffer,"\r\nEnter new value for lower limit in the range 50-9950: ");
 					USART_Write(USART2,buffer,n);
 				}
+				//if four digits have been entered or return has been hit
 				else if(temp=='\r'||i==4){
 					temp_floor=atoi(new_range);
+					//if the given value is withn the limits given by the assignment
 					if(temp_floor>49 && temp_floor<=9950){
 						floor=temp_floor;
 						n=sprintf((char *)buffer,"\r\nNew lower limit is: %d",floor);
 						USART_Write(USART2,buffer,n);
 						break;
 					}
+					//if not within the limits, restart input
 					else{
 						n=sprintf((char *)buffer,"\r\nInvalid input. Not within range!");
 						USART_Write(USART2,buffer,n);
 						i=-1;
+						continue;
 					}
 				}
 				temp=USART_Read(USART2);
@@ -64,14 +68,13 @@ int main(void){
 					n=sprintf((char *)buffer,"Invalid input!");
 					USART_Write(USART2,buffer,n);
 					i=-1;
+					continue;
 				}
 				//convert string of ASCII characters into an integer that represents the new lower limit
 				
 				else{
 					new_range[i]=temp;
 				}
-				//n=sprintf((char *)buffer,"\r\n%d",atoi(new_range));
-				//USART_Write(USART2,buffer,n);
 			}
 		}
 		temp=0;
@@ -121,7 +124,7 @@ int main(void){
 		if(answer=='y'){
 			n=sprintf((char *)buffer,"\r\nChange limits?(y/n)\r\n");
 			USART_Write(USART2,buffer,n);
-			answer=USART_Read(USART2); //if answer is y tnhen if clause will handle it
+			answer=USART_Read(USART2); //if answer is y then if clause on line 41   will handle it
 		}
 		else{
 			break;

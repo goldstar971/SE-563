@@ -57,7 +57,7 @@ void failed_test() {
 	while(1) {
 		
 		response = USART_Read(USART2);
-		
+		//if user asks to repeat POST test, turn off red LED and conduct pulse test again
 		if(response == 'y' || response == 'Y') {
 			message = sprintf((char *)buff, "    Testing again...               \r\n");
 			USART_Write(USART2, buff, message);
@@ -67,6 +67,7 @@ void failed_test() {
 			pulse_test();
 			return;
 		}
+		//if user says they do not wish to repeat test, lock down and await restart
 		else if (response == 'n' || response == 'N') {
 			message = sprintf((char *)buff, "    Locking down...                \r\n");
 			USART_Write(USART2, buff, message);
@@ -92,7 +93,7 @@ void failed_test() {
  */
 void successful_test() {
 	SysTick->CTRL = 0; // Disable SysTick
-	Green_LED_On();
+	Green_LED_On(); 
 	message = sprintf((char *)buff, "    Test Successful!               \r\n");
 	USART_Write(USART2, buff, message);
 	message = sprintf((char *)buff, "    Continuing with main program...\r\n");
@@ -125,15 +126,11 @@ void pulse_test() {
 	
 	
 	old_count=TIM2->CCR1; //need to have one rising edge to occur to actually time the pulses
-	
+	//if the SYSTIC interrupt has not fired
 	while(!failed) {
 		if(TIM2->SR&2){
-			//for the unlikely event the counter overflows mid measurement.
-			if(old_count>max_timer_count){
-				overflow=1;//increment overflow counter
-			}
 			new_count=TIM2->CCR1; //get value of counter at most recent rising edge 
-			measurement=max_timer_count*overflow+new_count-old_count;
+			measurement=new_count-old_count;
 			if(measurement <= MAX_TIME){
 				successful_test();
 				return;
