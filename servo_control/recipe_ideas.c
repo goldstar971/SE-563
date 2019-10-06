@@ -50,14 +50,17 @@ enum events
 
 // Define a "global" state value that is only accessible in one .c module (static makes it "private").
 // Define the initial state as paused.
-static enum servo_states current_servo_state = state_unknown ;
+// static enum servo_states current_servo_state = state_unknown ;
 
 // Code to start the move (adjust PWM) and start the timing delay based on the
 // current position.
+/**
 static void start_move( enum servo_states new_state )
 {
 	// TBD
 }
+*/
+/**
 // This section should be in a separate .c file such as state_machine.c.
 // In this code you add code to each case to process the 
 void process_event( enum events one_event )
@@ -78,8 +81,10 @@ void process_event( enum events one_event )
 			break ;
 	}
 }
+*/
 
 // A simple main that just prints out the hex value of the first entry in each recipe.
+/**
 void main()
 {
 	int i = 0 ;
@@ -90,3 +95,4 @@ void main()
 
 	}
 }
+*/

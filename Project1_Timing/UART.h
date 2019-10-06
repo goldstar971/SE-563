@@ -3,7 +3,7 @@
 
 #include "stm32l476xx.h"
 
-#define BufferSize 256
+#define BufferSize 32
 
 void UART2_Init(void);
 void UART2_GPIO_Init(void);

@@ -10,7 +10,7 @@
 void UART2_Init(void) {
 	// Enable the clock of USART 1 & 2
 	RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;  // Enable USART 2 clock		
-	 
+	
 	// Select the USART1 clock source
 	// 00: PCLK selected as USART2 clock
 	// 01: System clock (SYSCLK) selected as USART2 clock
@@ -100,10 +100,12 @@ void USART_Init (USART_TypeDef * USARTx) {
 
 uint8_t USART_Read (USART_TypeDef * USARTx) {
 	// SR_RXNE (Read data register not empty) bit is set by hardware
-	while (!(USARTx->ISR & USART_ISR_RXNE));  // Wait until RXNE (RX not empty) bit is set
 	// USART resets the RXNE flag automatically after reading DR
+	if (!(USARTx->ISR & USART_ISR_RXNE)) {
+		return '\0';
+	}
 	return ((uint8_t)(USARTx->RDR & 0xFF));
-	// Reading USART_DR automatically clears the RXNE flag 
+	// Reading USART_DR automatically clears the RXNE flag
 }
 
 void USART_Write(USART_TypeDef * USARTx, uint8_t *buffer, uint32_t nBytes) {
