@@ -1,0 +1,25 @@
+
+
+
+
+while (1)
+	# check to see if recipe one is running and not in an error state and not end of recipe 
+	# if it is, pull recipe command
+	# check if it is a loop, if it is a loop and you are already in a loop, enter error state
+	# if in loop and command is endloop and loop counter greater than 0, retreat recipe index back to beginning of loop and pull that command, after decrementing loop counter
+	if loop counter is 0, set loop off instead
+	#execute move commands if a legal value, enter error state otherwise
+	
+	#display status commands on LEDs (do this always)
+	
+	
+	# check to see if recipe two is running and not in an error state or end of recipe 
+	# if it is, pull recipe command
+	# check if it is a loop, if it is a loop and you are already in a loop, enter error state
+	# if in loop and command is endloop and loop counter greater than 0, retreat recipe index back to beginning of loop and pull that command, after decrementing loop counter
+	if loop counter is 0, set loop off instead
+	#execute move commands if a legal value, enter error state otherwise
+	
+	while (systick interuppt flag)
+	endwhile
+endwhile

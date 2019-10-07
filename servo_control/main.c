@@ -3,47 +3,92 @@
 #include "LED.h"
 #include "UART.h"
 #include "timer.h"
-
 #include <string.h>
 #include <stdio.h>
-
+#include "main.h"
 #define MAX_CMD_LENGTH 11
 
 volatile int gflash;
 volatile int rflash;
 volatile int hunMS;
 
-void SysTick_Handler(void) {
-			if(hunMS >= 60) {
-				if (rflash) {
-					Red_LED_Toggle();
-				}
-				if (gflash) {
-					Green_LED_Toggle();
-				}
-				hunMS = 0;
-			} else {
-				hunMS++;
-			}
-}
+motor_ctrl motor2;
+motor_ctrl motor1;
+
+char recipe1[20]={MOV|0,MOV|5,MOV|0,MOV|3,LOOP|0,MOV|1,MOV|4,END_lOOP,MOV|0, \
+MOV|2,WAIT|0,MOV|2,MOV|3,WAIT|31,WAIT|31,WAIT|31,MOV|4}; //demo recipe
+char recipe2[26]={MOV|0,WAIT|2,MOV|1,WAIT|2,MOV|2,WAIT|2,MOV|3,WAIT|2,MOV|4, \
+WAIT|2,MOV|5,WAIT|2,MOV|4,WAIT|2,MOV|3,WAIT|2,MOV|2,WAIT|2,MOV|1,WAIT|2,MOV|0, \
+RECIPE_END}; //demonstrates movement between all six positions in both directions
+char recipe3[3]={MOV|3,RECIPE_END,MOV|2}; //recipe 
+char recipe4[6]={MOV|2,LOOP|3,WAIT|2,MOV|5,LOOP,RECIPE_END}; //recipe to demonstrate loop error
+char recipe5[5]={MOV|2,LOOP|3,WAIT|2,MOV|6,RECIPE_END}; //recipe to demonstrate command error
+char recipe6[4]={MOV|3,WAIT|3,MOV|1,INVALID}; //recipe to demonstare illegal opcode handling
+	
+
+
+
 
 int main(void){
+	
 	char cmd[MAX_CMD_LENGTH] = ""; // Max Command Length Including End String
-	
-	hunMS = 0; // How Many 100 MS Intervals have Passed
-	
 	char input[2] = "" ; // Array to Read Input (Including End String)
 	int idx = 0 ; // Current IDX for String
+	
+	
 	
 	System_Clock_Init(); // Switch System Clock = 80 MHz
 	LED_Init();
 	UART2_Init();
-	SysTick_Initialize(1000000);
-	
+	TIM_Init(TIM2,twenty_ms,1);
+	TIM_Init(TIM5,one_hundred_ms,0);
 	USART_Write(USART2, (uint8_t *) "Welcome to the UART Machine!\r\n", 32);
 	USART_Write(USART2, (uint8_t *) "============================\r\n", 32);
 	
-	while (1) { // Execute Commands
+	while (1){
+		TIM5->SR &= ~TIM_SR_UIF;
+		
+		if(motor1.error_state==no_error && motor1.paused==0 && motor1.end_recipe==0 && motor1.running==1){
+			switch(motor1.recipe[motor1.recipe_index]&opcode_detect){
+				case MOV:
+					break;
+				case WAIT:
+					break;
+				case LOOP:
+					break;
+				case END_lOOP:
+					break;
+				case RECIPE_END:
+					break;
+				default:
+					motor1.error_state=command_error; //see comments in main.h
+			}
+		}
+		//do LED stuff based on motor 1 status
+		
+		
+		if(motor2.error_state==no_error && motor2.paused==0 && motor2.end_recipe==0 && motor2.running==1){
+				switch(motor2.recipe[motor2.recipe_index]&opcode_detect){
+					case MOV:
+						break;
+					case WAIT:
+						break;
+					case LOOP:
+						break;
+					case END_lOOP:
+						break;
+					case RECIPE_END:
+						break;
+					default:
+						motor2.error_state=command_error;
+			}	
+		}
+		while(!(TIM5->SR & TIM_SR_UIF)){
+			
+		}
+	}
+}
+while (1) { // Execute Commands
 		while (1) { // Get Commands - Time Loop
 	
 			// Read Input and Append to String
@@ -53,6 +98,7 @@ int main(void){
 			if(input[0] == '\0') { // No Input Given
 				// Don't Do Anything
 			}
+			
 			else if (input[0] == 0x7F && idx > 0) { // Backspace Pressed - Can Delete
 				USART_Write(USART2, (uint8_t *)input, 1);
 				idx--;
@@ -116,4 +162,6 @@ int main(void){
 		idx = 0;
 	}
 }
+
+
 
