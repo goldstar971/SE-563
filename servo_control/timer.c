@@ -1,5 +1,6 @@
 #include "timer.h"
 #include "main.h"
+#include <stdlib.h>
 
 extern motor_ctrl motor1;
 extern motor_ctrl motor2;
@@ -32,12 +33,18 @@ void TIM_GPIO_Init(GPIO_TypeDef *GPIOx){
 }
 
 int move_left(int motor_number){
+	char wait_time=0;
 	if (motor_number==1){
 		if (motor1.motor_position==0 || motor1.paused==0){
 				return 0;
 		}
 		else{
 			TIM2->CCR1=pos_values[--motor1.motor_position];
+			while(wait_time<3){
+				if(TIM5->SR & TIM_SR_UIF){
+					wait_time++;
+				}
+			}
 			return 1;
 		}
 	}
@@ -47,18 +54,30 @@ int move_left(int motor_number){
 		}
 		else{
 			TIM2->CCR2=pos_values[--motor2.motor_position];
+			TIM2->CCR1=pos_values[--motor1.motor_position];
+			while(wait_time<3){
+				if(TIM5->SR & TIM_SR_UIF){
+					wait_time++;
+				}
+			}
 			return 1;
 		}
 	}
 }
 
 int move_right(int motor_number){
+	char wait_time=0;
 	if (motor_number==1){
 		if (motor1.motor_position==5 || motor1.paused==0){
 				return 0;
 		}
 		else{
 			TIM2->CCR1=pos_values[++motor1.motor_position];
+			while(wait_time<3){
+				if(TIM5->SR & TIM_SR_UIF){
+					wait_time++;
+				}
+			}
 			return 1;
 		}
 	}
@@ -68,15 +87,33 @@ int move_right(int motor_number){
 		}
 		else{
 			TIM2->CCR2=pos_values[++motor2.motor_position];
+			while(wait_time<3){
+				if(TIM5->SR & TIM_SR_UIF){
+					wait_time++;
+				}
+			}
 			return 1;
 		}
 	}
 }
 
 void set_motor_position(int pos, int motor_number){
+	char wait_time=0;
+	int i=0;
+	for(i=0;i<6;i++){
+		if (pos_values[i]==TIM2->CCR1){
+				break;
+		}
+	}
 	if(motor_number==1&& 0<=pos && pos<=5){
 		TIM2->CCR1=pos_values[pos];
 		motor1.motor_position=pos;
+		while(wait_time<(2*abs(pos-i)+1)){
+			if(TIM5->SR & TIM_SR_UIF){
+				wait_time++;
+			}
+		}
+		
 	}
 	else if(motor_number==2 && 0<=pos && pos<=5){
 		TIM2->CCR2=pos_values[pos];

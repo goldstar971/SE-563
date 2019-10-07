@@ -1,5 +1,5 @@
 #include "UART.h"
-
+#include <stdio.h>
 
 // UART Ports:
 // ===================================================
@@ -22,8 +22,8 @@ void UART2_Init(void) {
 	UART2_GPIO_Init();
 	USART_Init(USART2);
 	
-	//NVIC_SetPriority(USART2_IRQn, 0);			// Set Priority to 1
-	//NVIC_EnableIRQ(USART2_IRQn);					// Enable interrupt of USART1 peripheral
+	NVIC_SetPriority(USART2_IRQn, 0);			// Set Priority to 1
+	NVIC_EnableIRQ(USART2_IRQn);					// Enable interrupt of USART1 peripheral
 }
 
 void UART2_GPIO_Init(void) {
@@ -75,7 +75,7 @@ void USART_Init (USART_TypeDef * USARTx) {
 
 	USARTx->CR1  |= (USART_CR1_RE | USART_CR1_TE);  	// Transmitter and Receiver enable
 	
-  if (USARTx == UART4){	
+  if (USARTx == USART2){	
 		USARTx->CR1 |= USART_CR1_RXNEIE;  			// Received Data Ready to be Read Interrupt  
 		USARTx->CR1 &= ~USART_CR1_TCIE;    			// Transmission Complete Interrupt 
 		USARTx->CR1 &= ~USART_CR1_IDLEIE;  			// Idle Line Detected Interrupt 
@@ -86,10 +86,10 @@ void USART_Init (USART_TypeDef * USARTx) {
 		//USARTx->CR3 &= ~USART_CR3_CTSIE;				// CTS Interrupt
 	}
 
-	if (USARTx == USART2){
-		USARTx->ICR |= USART_ICR_TCCF;
-		USART1->CR3 |= USART_CR3_DMAT | USART_CR3_DMAR;
-	}
+//	if (USARTx == USART2){
+//		USARTx->ICR |= USART_ICR_TCCF;
+//		USART1->CR3 |= USART_CR3_DMAT | USART_CR3_DMAR;
+//	}
 	
 	USARTx->CR1  |= USART_CR1_UE; // USART enable                 
 	
@@ -127,24 +127,111 @@ void USART_Delay(uint32_t us) {
 	while(--time);   
 }
 
-void USART_IRQHandler(USART_TypeDef * USARTx, uint8_t *buffer, uint32_t * pRx_counter){
-	if(USARTx->ISR & USART_ISR_RXNE) {						// Received data                         
-		buffer[*pRx_counter] = USARTx->RDR;         // Reading USART_DR automatically clears the RXNE flag 
-		(*pRx_counter)++;  
-		if((*pRx_counter) >= BufferSize )  {
-			(*pRx_counter) = 0;
-		}   
-	} else if(USARTx->ISR & USART_ISR_TXE) {
+void USART2_IRQ_HANDLER(void){
+	static char buffer[3];
+	static char counter;
+	char output[7];
+	int n;
+	if(USART2->ISR & USART_ISR_RXNE) {			// Received data                         
+		buffer[counter] = USART2->RDR;         // Reading USART_DR automatically clears the RXNE flag 
+			if ((buffer[counter]=='x' || buffer[counter]=='X')&&counter<2){
+				counter=0;
+				n=sprintf(output,"%c%c%c%c",buffer[counter],'\r','\n','>');
+				USART_Write(USART2,(uint8_t*)output,n);
+				return;
+			}
+			if (buffer[counter] == 0x7F ) { // Backspace Pressed - Can Delete
+				if(counter>0){
+					n=sprintf(output,"%c%c%c%c%c%c%c",0x1b,0x5b,'D',1,0x1b,0x5b,'K');
+					USART_Write(USART2, (uint8_t*)output, n);
+					counter--;
+					return;
+				}
+				else{
+					return;
+				}
+			}
+			else if (buffer[counter] == '\r'&& counter==2){
+				switch(buffer[0]){
+					case 'P':
+					case 'p':
+						break;
+					case 'r':
+					case 'R':
+						break;
+					case 'n':
+					case 'N':
+						break;
+					case 'S':
+					case 's':
+						break;
+					case 'C':
+					case 'c':
+						break;
+					case 'L':
+					case 'l':
+						break;
+					case 'B':
+					case 'b':
+						break;
+					default:
+						break;
+				}
+				switch(buffer[1]){
+					case 'P':
+					case 'p':
+						break;
+					case 'r':
+					case 'R':
+						break;
+					case 'n':
+					case 'N':
+						break;
+					case 'S':
+					case 's':
+						break;
+					case 'C':
+					case 'c':
+						break;
+					case 'L':
+					case 'l':
+						break;
+					case 'B':
+					case 'b':
+						break;
+					default:
+						break;
+				}
+				
+			
+					
+			}	
+			else if(counter==2){
+				USART_Write(USART2, (uint8_t *)"\r\n>", 3);
+				counter=0;
+				return;
+			}
+			else{
+				USART_Write(USART2,(uint8_t *)buffer[counter++], 1);
+			}
+				
+	}
+
+	
+	  else if(USART2->ISR & USART_ISR_TXE) {
  		//USARTx->ISR &= ~USART_ISR_TXE;            // clear interrupt 
 		//Tx1_Counter++;
-	} else if(USARTx->ISR & USART_ISR_ORE) {			// Overrun Error
+	} else if(USART2->ISR & USART_ISR_ORE) {			// Overrun Error
 		while(1);
-	} else if(USARTx->ISR & USART_ISR_PE) {				// Parity Error
+	} else if(USART2->ISR & USART_ISR_PE) {				// Parity Error
 		while(1);
-	} else if(USARTx->ISR & USART_ISR_PE) {				// USART_ISR_FE	
+	} else if(USART2->ISR & USART_ISR_PE) {				// USART_ISR_FE	
 		while(1);
-	} else if (USARTx->ISR & USART_ISR_NE){ 			// Noise Error Flag
+	} else if (USART2->ISR & USART_ISR_NE){ 			// Noise Error Flag
 		while(1);     
-	}	
+	}
+
+		
 }
+
 
