@@ -1,6 +1,7 @@
 #include "UART.h"
 #include <stdio.h>
 #include "main.h"
+#include "motor.h"
 #include "timer.h"
 // UART Ports:
 // ===================================================
@@ -142,7 +143,7 @@ void USART_Delay(uint32_t us) {
 	uint32_t time = 100*us/7;    
 	while(--time);   
 }
-
+//for user input
 void USART2_IRQHandler(void){
 	static char buffer[3];
 	static char counter;
@@ -150,6 +151,7 @@ void USART2_IRQHandler(void){
 	int n;
 	if(USART2->ISR & USART_ISR_RXNE) {				// Received data                         
 		buffer[counter] = USART2->RDR;					// Reading USART_DR automatically clears the RXNE flag 
+		// input was x or X, discard previous character input
 			if ((buffer[counter]=='x' || buffer[counter]=='X')&&counter<2){
 				n=sprintf(output,"%c%c%c%c",buffer[counter],'\r','\n','>');
 					counter=0;
@@ -158,6 +160,8 @@ void USART2_IRQHandler(void){
 			}
 			if (buffer[counter] == 0x7F ) { // Backspace Pressed - Can Delete
 				if(counter>0){
+					//send ANSI escape sequences to move one character back and then delete to end of line
+					//Sequences "ESC[1D" and then "ESC[K"
 					n=sprintf(output,"%c%c%c%c%c%c%c",0x1b,0x5b,'D',1,0x1b,0x5b,'K');
 					USART_Write(USART2, (uint8_t*)output, n);
 					counter--;
@@ -167,20 +171,21 @@ void USART2_IRQHandler(void){
 					return;
 				}
 			}
+			//if the two previous characters have been input, check if input is carriage return
 			else if (buffer[counter] == '\r'&& counter==2){
 					USART_Write(USART2, (uint8_t *)"\r\n>", 3);	
 					counter=0;
+				//preform task based on first character for first motor
 				switch(buffer[0]){
 					case 'P':
 					case 'p':
 						if(!(motor1.end_recipe || motor1.error_state))
 							motor1.paused=1;
-							motor1.running=0;
 						break;
 					case 'r':
 					case 'R':
 						if(motor1.paused){
-							set_motor_position(motor1.motor_position+1,1,1);
+							set_motor_position(motor1.motor_position-1,1,1);
 						}
 						break;
 					case 'n':
@@ -194,35 +199,33 @@ void USART2_IRQHandler(void){
 					case 'c':
 						if(!(motor1.end_recipe || motor1.error_state)) {
 							motor1.paused=0;
-							motor1.running=1;
 						}
 						break;
 					case 'L':
 					case 'l':
 						if(motor1.paused){
-							set_motor_position(motors1.motor_position-1,2,1);
+							set_motor_position(motor1.motor_position+1,1,1);
 						}
 						break;
 					case 'B':
 					case 'b':
 						motor_Init(1, motor1.recipe_num, motor1.motor_position);
 						motor1.paused = 0;
-						motor1.running = 1;
 						break;
 					default:
 						break;
 				}
+				//preform task based on second character for second motor
 				switch(buffer[1]){
 					case 'P':
 					case 'p':
 						if(!(motor2.end_recipe || motor2.error_state))
 							motor2.paused=1;
-							motor2.running=0;
 						break;
 					case 'r':
 					case 'R':
 						if(motor2.paused){
-							set_motor_position(motor2.motor_position+1,2,1);
+							set_motor_position(motor2.motor_position-1,2,1);
 						}
 						break;
 					case 'n':
@@ -236,42 +239,44 @@ void USART2_IRQHandler(void){
 					case 'c':
 						if(!(motor2.end_recipe || motor2.error_state)) {
 							motor2.paused=0;
-							motor2.running=1;
 						}
 						break;
 					case 'L':
 					case 'l':
 						if(motor2.paused){
-							set_motor_position(motor2.motor_position-1,2,1);	
+							set_motor_position(motor2.motor_position+1,2,1);	
 						}
 						break;
 					case 'B':
 					case 'b':
 						motor_Init(2, motor2.recipe_num, motor2.motor_position);
 						motor2.paused = 0;
-						motor2.running = 1;
 						break;
 					default:
 						break;
 				}
 			}
+			//else, if third character is input that is not a newline, ignore input
+			//and reset to wait for next user command
 			else if(counter==2){
 				USART_Write(USART2, (uint8_t *)"\r\n>", 3);
 				counter=0;
 				return;
 			}
+			//if less than two characters 
 			else{
+				//if carriage return, reset and go to next line
 				if(buffer[counter]=='\r'){
 					USART_Write(USART2, (uint8_t *)"\r\n>", 3);
 					counter=0;
 				}
+				//if other character, append to buffer
 				else{
 					USART_Write_char(USART2,buffer[counter]);
 					counter++;
 				}
 			}
 	}
-
 	  else if(USART2->ISR & USART_ISR_TXE) {
  		//USARTx->ISR &= ~USART_ISR_TXE;            // clear interrupt 
 		//Tx1_Counter++;

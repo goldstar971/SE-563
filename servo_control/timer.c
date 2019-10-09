@@ -1,10 +1,11 @@
 #include "timer.h"
+#include "motor.h"
 #include "main.h"
 #include <stdlib.h>
 
 extern motor_ctrl motor1;
 extern motor_ctrl motor2;
-int pos_values[6]={800,1440,2080,2720,3360,4000};
+
 void TIM_Init(TIM_TypeDef * TIMx, int ARR_value,char PWM_out){
 	
 
@@ -16,12 +17,12 @@ void TIM_Init(TIM_TypeDef * TIMx, int ARR_value,char PWM_out){
 	}
 	TIMx-> CR1=0x84; //disable timer and set it to count up
 	TIMx->CCER &=~0x11;//disable channels 1 and 2
-	TIMx-> PSC =0x27; //set prescale clock to 2mhz
+	TIMx-> PSC =799; //set prescale clock to 100khz
 	TIMx-> ARR =ARR_value;  // resets after n miliseconds
 	if (PWM_out){
 		TIMx-> CCMR1=0x6868; // set ch1 and ch2 as outputs 
-		TIMx-> CCR1=pos_values[0]; //	 servo 1 set to move to position zero (1 % duty cycle)
-		TIMx-> CCR2=pos_values[0]; // servo 2 set to move to position zero (2% duty cycle)
+		TIMx-> CCR1=pos_values[0]+offset; //	 servo 1 set to move to position zero (1 % duty cycle)
+		TIMx-> CCR2=pos_values[0]+offset; // servo 2 set to move to position zero (2% duty cycle)
 		
 		TIMx->CCER |=TIM_CCER_CC1E+TIM_CCER_CC2E; //enable timer channel 1 and 2
 	}
@@ -38,69 +39,13 @@ void TIM_GPIO_Init(GPIO_TypeDef *GPIOx){
 	GPIOx->AFR[0]|=0x11; //configure PAO and PA1 with alt function  (CHx_timx)	
 }
 
-//void move_left(int motor_number){
-//	char wait_time=0;
-//	if (motor_number==1){
-//		if (motor1.motor_position==0 || motor1.paused==0){;
-//		}
-//		else{
-//			TIM2->CCR1=pos_values[--motor1.motor_position];
-//			while(wait_time<3){
-//				if(TIM5->SR & TIM_SR_UIF){
-//					wait_time++;
-//				}
-//			}
-//		}
-//	}
-//	else{
-//		if (motor2.motor_position==0 || motor2.paused==0){;
-//		}
-//		else{
-//			TIM2->CCR2=pos_values[--motor2.motor_position];
-//
-//			while(wait_time<3){
-//				if(TIM5->SR & TIM_SR_UIF){
-//					wait_time++;
-//				}
-//			}
-//
-//		}
-//	}
-//}
-//
-//void move_right(int motor_number){
-//	char wait_time=0;
-//	if (motor_number==1){
-//		if (motor1.motor_position==5 || motor1.paused==0){;
-//		}
-//		else{
-//			TIM2->CCR1=pos_values[++motor1.motor_position];
-//			while(wait_time<3){
-//				if(TIM5->SR & TIM_SR_UIF){
-//					wait_time++;
-//				}
-//			}	
-//		}
-//	}
-//	else{
-//		if (motor2.motor_position==5 || motor2.paused==0){;
-//		}
-//		else{
-//			TIM2->CCR2=pos_values[++motor2.motor_position];
-//			while(wait_time<3){
-//				if(TIM5->SR & TIM_SR_UIF){
-//					wait_time++;
-//				}
-//			}
-//		}
-//	}
-//}
+
 
 void set_motor_position(int pos, int motor_number, int user_command){
 	char wait_time=0;
 	char last_pos=motor1.motor_position;
 	if(motor_number==1&& 0<=pos && pos<=5){
-		TIM2->CCR1=pos_values[pos];
+		TIM2->CCR1=pos_values[pos]+offset;
 		motor1.motor_position=pos;
 		while(wait_time<(2*abs(pos-last_pos)+1)){
 			if(TIM5->SR & TIM_SR_UIF){
@@ -109,19 +54,26 @@ void set_motor_position(int pos, int motor_number, int user_command){
 		}
 		
 	}
+	//if within range.
 	else if(motor_number==2 && 0<=pos && pos<=5){
-		TIM2->CCR2=pos_values[pos];
+		TIM2->CCR2=pos_values[pos]+offset;
 		motor2.motor_position=pos;
+		//wait at minimum two hundred miliseconds for each position it has to move through
+		//from its current position to the end position.
 		while(wait_time<(2*abs(pos-last_pos)+1)){
 			if(TIM5->SR & TIM_SR_UIF){
 				wait_time++;
 			}
 		}
 	}
+	//if out of range position comming from a recipe and not a user command
+	//set an error state.
 	else if(motor_number==1 && user_command==0){
 		motor1.error_state=command_error;
 		return;
 	}
+		//if out of range position comming from a recipe and not a user command
+	//set an error state.
 	else if(motor_number==2 && user_command==0){
 		motor2.error_state=command_error;
 		return;
