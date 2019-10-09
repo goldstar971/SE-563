@@ -1,12 +1,15 @@
 #include "UART.h"
 #include <stdio.h>
-
+#include "main.h"
+#include "timer.h"
 // UART Ports:
 // ===================================================
 // PA.0 = UART4_TX (AF8)   |  PA.1 = UART4_RX (AF8)      
 // PB.6 = USART1_TX (AF7)  |  PB.7 = USART1_RX (AF7) 
 // PD.5 = USART2_TX (AF7)  |  PD.6 = USART2_RX (AF7)
-
+char buffer[3];
+extern motor_ctrl motor1;
+extern motor_ctrl motor2;
 void UART2_Init(void) {
 	// Enable the clock of USART 1 & 2
 	RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;  // Enable USART 2 clock		
@@ -120,6 +123,19 @@ void USART_Write(USART_TypeDef * USARTx, uint8_t *buffer, uint32_t nBytes) {
 	while (!(USARTx->ISR & USART_ISR_TC));   		  // wait until TC bit is set
 	USARTx->ISR &= ~USART_ISR_TC;
 }   
+
+void USART_Write_char(USART_TypeDef * USARTx,  char output) {
+
+	// TXE is cleared by a write to the USART_DR register.
+	// TXE is set by hardware when the content of the TDR 
+	// register has been transferred into the shift register.
+		
+		USARTx->TDR = output & 0xFF;
+		USART_Delay(300);
+	
+	while (!(USARTx->ISR & USART_ISR_TC));   		  // wait until TC bit is set
+	USARTx->ISR &= ~USART_ISR_TC;
+}   
  
 
 void USART_Delay(uint32_t us) {
@@ -127,16 +143,16 @@ void USART_Delay(uint32_t us) {
 	while(--time);   
 }
 
-void USART2_IRQ_HANDLER(void){
+void USART2_IRQHandler(void){
 	static char buffer[3];
 	static char counter;
 	char output[7];
 	int n;
-	if(USART2->ISR & USART_ISR_RXNE) {			// Received data                         
-		buffer[counter] = USART2->RDR;         // Reading USART_DR automatically clears the RXNE flag 
+	if(USART2->ISR & USART_ISR_RXNE) {				// Received data                         
+		buffer[counter] = USART2->RDR;					// Reading USART_DR automatically clears the RXNE flag 
 			if ((buffer[counter]=='x' || buffer[counter]=='X')&&counter<2){
-				counter=0;
 				n=sprintf(output,"%c%c%c%c",buffer[counter],'\r','\n','>');
+					counter=0;
 				USART_Write(USART2,(uint8_t*)output,n);
 				return;
 			}
@@ -152,27 +168,46 @@ void USART2_IRQ_HANDLER(void){
 				}
 			}
 			else if (buffer[counter] == '\r'&& counter==2){
+					USART_Write(USART2, (uint8_t *)"\r\n>", 3);	
+					counter=0;
 				switch(buffer[0]){
 					case 'P':
 					case 'p':
+						if(!(motor1.end_recipe || motor1.error_state))
+							motor1.paused=1;
+							motor1.running=0;
 						break;
 					case 'r':
 					case 'R':
+						if(motor1.paused){
+							move_right(1);
+						}
 						break;
 					case 'n':
 					case 'N':
 						break;
 					case 'S':
 					case 's':
+						switchRecipe(1);
 						break;
 					case 'C':
 					case 'c':
+						if(!(motor1.end_recipe || motor1.error_state)) {
+							motor1.paused=0;
+							motor1.running=1;
+						}
 						break;
 					case 'L':
 					case 'l':
+						if(motor1.paused){
+							move_left(1);
+						}
 						break;
 					case 'B':
 					case 'b':
+						motor_Init(1, motor1.recipe_num, motor1.motor_position);
+						motor1.paused = 0;
+						motor1.running = 1;
 						break;
 					default:
 						break;
@@ -180,44 +215,63 @@ void USART2_IRQ_HANDLER(void){
 				switch(buffer[1]){
 					case 'P':
 					case 'p':
+						if(!(motor2.end_recipe || motor2.error_state))
+							motor2.paused=1;
+							motor2.running=0;
 						break;
 					case 'r':
 					case 'R':
+						if(motor2.paused){
+							move_right(2);
+						}
 						break;
 					case 'n':
 					case 'N':
 						break;
 					case 'S':
 					case 's':
+						switchRecipe(2);
 						break;
 					case 'C':
 					case 'c':
+						if(!(motor2.end_recipe || motor2.error_state)) {
+							motor2.paused=0;
+							motor2.running=1;
+						}
 						break;
 					case 'L':
 					case 'l':
+						if(motor2.paused){
+							move_left(1);
+						}
 						break;
 					case 'B':
 					case 'b':
+						motor_Init(2, motor2.recipe_num, motor2.motor_position);
+						motor2.paused = 0;
+						motor2.running = 1;
 						break;
 					default:
 						break;
 				}
-				
-			
-					
-			}	
+			}
 			else if(counter==2){
 				USART_Write(USART2, (uint8_t *)"\r\n>", 3);
 				counter=0;
 				return;
 			}
 			else{
-				USART_Write(USART2,(uint8_t *)buffer[counter++], 1);
+				if(buffer[counter]=='\r'){
+					USART_Write(USART2, (uint8_t *)"\r\n>", 3);
+					counter=0;
+				}
+				else{
+					USART_Write_char(USART2,buffer[counter]);
+					counter++;
+				}
 			}
-				
 	}
 
-	
 	  else if(USART2->ISR & USART_ISR_TXE) {
  		//USARTx->ISR &= ~USART_ISR_TXE;            // clear interrupt 
 		//Tx1_Counter++;
@@ -229,9 +283,5 @@ void USART2_IRQ_HANDLER(void){
 		while(1);
 	} else if (USART2->ISR & USART_ISR_NE){ 			// Noise Error Flag
 		while(1);     
-	}
-
-		
+	}		
 }
-
-

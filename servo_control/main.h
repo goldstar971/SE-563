@@ -8,14 +8,16 @@
 #define END_lOOP 0xA0
 #define RECIPE_END 0x00
 #define opcode_detect 0xE0
+#define parameter_detect 0x1F
 #define one_hundred_ms 199999
 #define twenty_ms 39999
-
+#define NUMBER_OF_RECIPES 6
 
 //needed to differentiate 
 #define no_error 0
 #define loop_error 1
 #define command_error 2
+#define parameter_error 3
 
 
 
@@ -32,10 +34,11 @@ struct {
 	char start_of_loop; //where to go in the recipe for the beginning of the next recipe iteration.  Init to zero at start of main
 	char recipe_index; //location in recipe
 	char end_recipe; //recipe execution has ended i.e., end_of_recipe command encountered.  Init to zero at start of main
-	char *recipe;  //pointer to the char array containing a particular recipe command.  Initialize it to the demo snipit (recipe 1)
+	char recipe_num; // Index in the Recipe List
 	char motor_position; //index of motor position between 0 and 5, already initalized to zero during timer init.
 } typedef motor_ctrl;
 
-
+void switchRecipe(char);
+void motor_Init(char motor, char recipe_num, char motor_position);
 
 #endif

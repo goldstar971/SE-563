@@ -4,7 +4,7 @@
 #include "stm32l476xx.h"
 
 #define BufferSize 256
-
+void USART_Write_char(USART_TypeDef * USARTx, char output);
 void UART2_Init(void);
 void UART2_GPIO_Init(void);
 void USART1_IRQHandler(void);
