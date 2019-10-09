@@ -5,7 +5,12 @@
 
 extern motor_ctrl motor1;
 extern motor_ctrl motor2;
-
+/************************************************
+Purpose: initalize timers to generate PWM or produce update events at specific time periods 
+Inputs: TIMx:the hardware timer to configure, ARR_value: the value the timer is to count up to,
+PWM_out: whether or not the timer is for PWM
+Outputs: None
+************************************************/
 void TIM_Init(TIM_TypeDef * TIMx, int ARR_value,char PWM_out){
 	
 
@@ -30,7 +35,11 @@ void TIM_Init(TIM_TypeDef * TIMx, int ARR_value,char PWM_out){
 	TIMx->CR1|=TIM_CR1_CEN; //start timer 
 	
 }
-
+/************************************************
+Purpose: initalize GPIO pins A0, A1 to serve as CH1 and CH2 for TIM2   
+Inputs: GPIOx: The PIN bank to initalize
+Outputs: None
+************************************************/
 void TIM_GPIO_Init(GPIO_TypeDef *GPIOx){
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN ; //enable clock for GPIO port A
 	GPIOx->MODER &=~0x0000000f; // clear mode register for PA1 and PA0
@@ -38,7 +47,12 @@ void TIM_GPIO_Init(GPIO_TypeDef *GPIOx){
 	GPIOx->AFR[0]&=~0x0000011; //clear alternative function register for PA0 and PA1
 	GPIOx->AFR[0]|=0x11; //configure PAO and PA1 with alt function  (CHx_timx)	
 }
-
+/************************************************
+Purpose: Sets position of motor to given position if position is legal
+Inputs: pos the requested position, motor_number: the motor it is requested for, 
+user_command: whether or not the position request is from a recipe or directly from the user
+Outputs: None
+************************************************/
 
 
 void set_motor_position(int pos, int motor_number, int user_command){

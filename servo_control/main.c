@@ -12,9 +12,15 @@
 
 motor_ctrl motor2;
 motor_ctrl motor1;
-
+/************************************************
+Purpose: Switch recipe for a motor
+Inputs: motor: the number of the motor whose recipie is to be switched
+Outputs: None
+************************************************/
 void switchRecipe(char motor) {
 	if(motor == 1) {
+		//if the next recipe index would be greater than the number of recipies
+		//wrap around to the first recipe.
 		if(motor1.recipe_num >= NUMBER_OF_RECIPES) {
 			motor1.recipe_num = 0;
 		} else {
@@ -28,6 +34,8 @@ void switchRecipe(char motor) {
 		motor1.recipe_index = 0;
 		motor1.end_recipe = 0;
 	} else if (motor == 2) {
+			//if the next recipe index would be greater than the number of recipies
+		//wrap around to the first recipe.
 		if(motor2.recipe_num >= NUMBER_OF_RECIPES) {
 			motor2.recipe_num = 0;
 		} else {

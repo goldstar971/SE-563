@@ -143,7 +143,11 @@ void USART_Delay(uint32_t us) {
 	uint32_t time = 100*us/7;    
 	while(--time);   
 }
-//for user input
+/************************************************
+Purpose: interupt handler for user terminal input 
+Inputs: None
+Outputs: None
+************************************************/
 void USART2_IRQHandler(void){
 	static char buffer[3];
 	static char counter;
