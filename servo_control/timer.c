@@ -38,65 +38,65 @@ void TIM_GPIO_Init(GPIO_TypeDef *GPIOx){
 	GPIOx->AFR[0]|=0x11; //configure PAO and PA1 with alt function  (CHx_timx)	
 }
 
-void move_left(int motor_number){
-	char wait_time=0;
-	if (motor_number==1){
-		if (motor1.motor_position==0 || motor1.paused==0){;
-		}
-		else{
-			TIM2->CCR1=pos_values[--motor1.motor_position];
-			while(wait_time<3){
-				if(TIM5->SR & TIM_SR_UIF){
-					wait_time++;
-				}
-			}
-		}
-	}
-	else{
-		if (motor2.motor_position==0 || motor2.paused==0){;
-		}
-		else{
-			TIM2->CCR2=pos_values[--motor2.motor_position];
+//void move_left(int motor_number){
+//	char wait_time=0;
+//	if (motor_number==1){
+//		if (motor1.motor_position==0 || motor1.paused==0){;
+//		}
+//		else{
+//			TIM2->CCR1=pos_values[--motor1.motor_position];
+//			while(wait_time<3){
+//				if(TIM5->SR & TIM_SR_UIF){
+//					wait_time++;
+//				}
+//			}
+//		}
+//	}
+//	else{
+//		if (motor2.motor_position==0 || motor2.paused==0){;
+//		}
+//		else{
+//			TIM2->CCR2=pos_values[--motor2.motor_position];
+//
+//			while(wait_time<3){
+//				if(TIM5->SR & TIM_SR_UIF){
+//					wait_time++;
+//				}
+//			}
+//
+//		}
+//	}
+//}
+//
+//void move_right(int motor_number){
+//	char wait_time=0;
+//	if (motor_number==1){
+//		if (motor1.motor_position==5 || motor1.paused==0){;
+//		}
+//		else{
+//			TIM2->CCR1=pos_values[++motor1.motor_position];
+//			while(wait_time<3){
+//				if(TIM5->SR & TIM_SR_UIF){
+//					wait_time++;
+//				}
+//			}	
+//		}
+//	}
+//	else{
+//		if (motor2.motor_position==5 || motor2.paused==0){;
+//		}
+//		else{
+//			TIM2->CCR2=pos_values[++motor2.motor_position];
+//			while(wait_time<3){
+//				if(TIM5->SR & TIM_SR_UIF){
+//					wait_time++;
+//				}
+//			}
+//		}
+//	}
+//}
 
-			while(wait_time<3){
-				if(TIM5->SR & TIM_SR_UIF){
-					wait_time++;
-				}
-			}
-
-		}
-	}
-}
-
-void move_right(int motor_number){
-	char wait_time=0;
-	if (motor_number==1){
-		if (motor1.motor_position==5 || motor1.paused==0){;
-		}
-		else{
-			TIM2->CCR1=pos_values[++motor1.motor_position];
-			while(wait_time<3){
-				if(TIM5->SR & TIM_SR_UIF){
-					wait_time++;
-				}
-			}	
-		}
-	}
-	else{
-		if (motor2.motor_position==5 || motor2.paused==0){;
-		}
-		else{
-			TIM2->CCR2=pos_values[++motor2.motor_position];
-			while(wait_time<3){
-				if(TIM5->SR & TIM_SR_UIF){
-					wait_time++;
-				}
-			}
-		}
-	}
-}
-
-void set_motor_position(int pos, int motor_number){
+void set_motor_position(int pos, int motor_number, int user_command){
 	char wait_time=0;
 	char last_pos=motor1.motor_position;
 	if(motor_number==1&& 0<=pos && pos<=5){
@@ -118,11 +118,11 @@ void set_motor_position(int pos, int motor_number){
 			}
 		}
 	}
-	else if(motor_number==1){
+	else if(motor_number==1 && user_command==0){
 		motor1.error_state=command_error;
 		return;
 	}
-	else if(motor_number==2){
+	else if(motor_number==2 && user_command==0){
 		motor2.error_state=command_error;
 		return;
 	}

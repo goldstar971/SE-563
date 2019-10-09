@@ -180,7 +180,7 @@ void USART2_IRQHandler(void){
 					case 'r':
 					case 'R':
 						if(motor1.paused){
-							move_right(1);
+							set_motor_position(motor1.motor_position+1,1,1);
 						}
 						break;
 					case 'n':
@@ -200,7 +200,7 @@ void USART2_IRQHandler(void){
 					case 'L':
 					case 'l':
 						if(motor1.paused){
-							move_left(1);
+							set_motor_position(motors1.motor_position-1,2,1);
 						}
 						break;
 					case 'B':
@@ -222,7 +222,7 @@ void USART2_IRQHandler(void){
 					case 'r':
 					case 'R':
 						if(motor2.paused){
-							move_right(2);
+							set_motor_position(motor2.motor_position+1,2,1);
 						}
 						break;
 					case 'n':
@@ -242,7 +242,7 @@ void USART2_IRQHandler(void){
 					case 'L':
 					case 'l':
 						if(motor2.paused){
-							move_left(1);
+							set_motor_position(motor2.motor_position-1,2,1);	
 						}
 						break;
 					case 'B':
