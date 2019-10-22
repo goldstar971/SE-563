@@ -90,8 +90,8 @@ current_time average_transaction_time(char teller_num){
 			 sum_times+=bank_sim.tellers[teller_num].transaction_times[i];
 		}
 		//get average transaction time in terms of simulated seconds
-		average_time_sec=convert_cnt_2_seconds(sum_times/bank_sim.customers_served);
-	  average_time.minutes=average_time_sec/60;
+		average_time_sec=convert_cnt_2_seconds(sum_times/bank_sim.tellers[teller_num].customers_served);
+		average_time.minutes=average_time_sec/60;
 		average_time.seconds=average_time_sec%60;
 		
 		return average_time;
@@ -105,6 +105,7 @@ current_time max_transaction_time(char teller_num){
 				max_time=bank_sim.tellers[teller_num].transaction_times[i];
 			}
 		}
+		//get maximum transaction time in terms of simulated seconds
 		max_time_sec=convert_cnt_2_seconds(max_time);
 		time.minutes=max_time_sec/60;
 		time.seconds=max_time_sec%60;
@@ -122,6 +123,7 @@ current_time max_time_queue(void){
 				max_time=bank_sim.queue_wait_times[i];
 			}
 		}
+		//get max queue time in terms of simulated seconds
 		max_time_sec=convert_cnt_2_seconds(max_time);
 		time.minutes=max_time_sec/60;
 		time.seconds=max_time_sec%60;
@@ -137,6 +139,7 @@ current_time max_teller_idle(char teller_num){
 				max_time=bank_sim.tellers[teller_num].teller_idle_times[i];
 			}
 		}
+		//get max teller idle time in terms of simulated seconds
 		max_time_sec=convert_cnt_2_seconds(max_time);
 		time.minutes=max_time_sec/60;
 		time.seconds=max_time_sec%60;
@@ -151,7 +154,7 @@ current_time avg_teller_idle(char teller_num){
 		for(int i=0;i<bank_sim.tellers[teller_num].customers_served;i++){
 			 sum_times+=bank_sim.tellers[teller_num].teller_idle_times[i];
 		}
-		//get average transaction time in terms of simulated seconds
+		//get average teller idle time in terms of simulated seconds
 		average_time_sec=convert_cnt_2_seconds(sum_times/bank_sim.tellers[teller_num].customers_served);
 	  average_time.minutes=average_time_sec/60;
 		average_time.seconds=average_time_sec%60;
