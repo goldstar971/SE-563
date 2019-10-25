@@ -390,9 +390,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>::CMSIS</GroupName>
-        </Group>
-        <Group>
           <GroupName>Application/User</GroupName>
           <Files>
             <File>
@@ -441,14 +438,14 @@
               <FilePath>../Src/stm32l4xx_hal_timebase_tim.c</FilePath>
             </File>
             <File>
-              <FileName>people.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Inc\people.h</FilePath>
-            </File>
-            <File>
               <FileName>people.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\people.c</FilePath>
+            </File>
+            <File>
+              <FileName>people.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\people.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -621,6 +618,9 @@
               <FilePath>../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/port.c</FilePath>
             </File>
           </Files>
+        </Group>
+        <Group>
+          <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
     </Target>

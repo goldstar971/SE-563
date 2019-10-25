@@ -26,52 +26,46 @@
 #include "usart.h"
 #include "gpio.h"
 #include "people.h"
+#include "stddef.h"
+#include "stdint.h"
  
 void SystemClock_Config(void);
 void MX_FREERTOS_Init(void);
 
 bank bank_sim;
 
-
-
-
 int main(void)
 {
+	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+	HAL_Init();
 
+	/* Configure the system clock */
+	SystemClock_Config();
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+	/* Initialize all configured peripherals */
+	MX_GPIO_Init();
+	MX_RNG_Init();
+	MX_TIM2_Init();
+	MX_USART2_UART_Init();
 
- 
+	/* USER CODE BEGIN 2 */
 
-  /* Configure the system clock */
-  SystemClock_Config();
+	/* USER CODE END 2 */
 
-  
+	/* Call init function for freertos objects (in freertos.c) */
+	MX_FREERTOS_Init(); 
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_RNG_Init();
-  MX_TIM2_Init();
-  MX_USART2_UART_Init();
-  /* USER CODE BEGIN 2 */
+	/* Start scheduler */
+	osKernelStart();
 
-  /* USER CODE END 2 */
+	/* We should never get here as control is now taken by the scheduler */
 
-  /* Call init function for freertos objects (in freertos.c) */
-  MX_FREERTOS_Init(); 
+	/* Infinite loop */
+	/* USER CODE BEGIN WHILE */
+	while (1)
+	{
 
-  /* Start scheduler */
-  osKernelStart();
-  
-  /* We should never get here as control is now taken by the scheduler */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-  
-  }
+	}
 
 }
 

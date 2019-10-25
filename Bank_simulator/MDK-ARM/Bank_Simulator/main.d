@@ -7,7 +7,7 @@ bank_simulator\main.o: ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_def.h
 bank_simulator\main.o: ../Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l4xx.h
 bank_simulator\main.o: ../Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l476xx.h
 bank_simulator\main.o: ../Drivers/CMSIS/Include/core_cm4.h
-bank_simulator\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+bank_simulator\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 bank_simulator\main.o: ../Drivers/CMSIS/Include/cmsis_version.h
 bank_simulator\main.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
 bank_simulator\main.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
@@ -15,7 +15,7 @@ bank_simulator\main.o: ../Drivers/CMSIS/Include/mpu_armv7.h
 bank_simulator\main.o: ../Drivers/CMSIS/Device/ST/STM32L4xx/Include/system_stm32l4xx.h
 bank_simulator\main.o: ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h
 bank_simulator\main.o: ../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
-bank_simulator\main.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+bank_simulator\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 bank_simulator\main.o: ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_rcc_ex.h
 bank_simulator\main.o: ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_exti.h
 bank_simulator\main.o: ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_gpio.h
@@ -49,3 +49,5 @@ bank_simulator\main.o: ../Inc/tim.h
 bank_simulator\main.o: ../Inc/usart.h
 bank_simulator\main.o: ../Inc/gpio.h
 bank_simulator\main.o: ../Inc/people.h
+bank_simulator\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
+bank_simulator\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h

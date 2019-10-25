@@ -3,6 +3,7 @@
 #include "usart.h"
 #include "main.h"
 #include "FreeRTOS.h"
+
 extern bank bank_sim;
 //initalize bank_sim variable, to be called at the beginning of the queue task
 //before while loop.
@@ -15,7 +16,6 @@ void deinit_bank(void){
 			vPortFree(bank_sim.tellers[i].transaction_times);
 		}
 		vPortFree(bank_sim.tellers);
-		
 }
 
 void init_bank(void){
@@ -25,16 +25,17 @@ void init_bank(void){
 	bank_sim.tellers=(teller*)pvPortMalloc(sizeof(teller)*3);
 	//teller init
 	for(int i=0;i<3;i++){
-		bank_sim.tellers=teller_init();
+		bank_sim.tellers = teller_init();
 		bank_sim.tellers++;
 	}
 	bank_sim.queue_wait_times=(short*)pvPortMalloc(sizeof(short)*MAX_CUSTOMERS);
 	bank_sim.start_count=__HAL_TIM_GetCounter(&htim2);
 	bank_sim.bank_open=1;
+	bank_sim.block=xSemaphoreCreateMutex();	
 }
 
 teller* teller_init(void){
-	 teller* Teller=(teller*)pvPortMalloc(sizeof(teller));
+	 teller* Teller =(teller*)pvPortMalloc(sizeof(teller));
 	 Teller->status=idle;
 	 Teller->customers_served=0;
 	 Teller->teller_idle_times=(short*)pvPortMalloc(sizeof(short)*MAX_CUSTOMERS);
@@ -170,6 +171,7 @@ int get_total_customers_served(char teller_num){
 }
 
 
-//these functions involve USART2 so they are for Ellijah to implement
+//these functions involve USART2 so they are for Elijah to implement
 int get_teller_stats(char teller_num);
 void report_metrics(void);
+
