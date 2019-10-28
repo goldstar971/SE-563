@@ -447,6 +447,11 @@
               <FileType>5</FileType>
               <FilePath>..\Inc\people.h</FilePath>
             </File>
+            <File>
+              <FileName>job.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\job.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

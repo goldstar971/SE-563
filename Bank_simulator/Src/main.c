@@ -26,16 +26,18 @@
 #include "usart.h"
 #include "gpio.h"
 #include "people.h"
+#include "task.h"
 #include "stddef.h"
 #include "stdint.h"
- 
+#include "job.h" 
+
 void SystemClock_Config(void);
 void MX_FREERTOS_Init(void);
 
 bank bank_sim;
 
 int main(void)
-{
+{ 
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();
 
@@ -49,7 +51,8 @@ int main(void)
 	MX_USART2_UART_Init();
 
 	/* USER CODE BEGIN 2 */
-
+	create_tasks();
+	
 	/* USER CODE END 2 */
 
 	/* Call init function for freertos objects (in freertos.c) */
@@ -66,7 +69,6 @@ int main(void)
 	{
 
 	}
-
 }
 
 /**

@@ -1,17 +1,16 @@
+#include "FreeRTOS.h"
 #include "people.h"
 #include "tim.h"
 #include "usart.h"
 #include "main.h"
-#include "FreeRTOS.h"
+#include "task.h"
 
 extern bank bank_sim;
-//initalize bank_sim variable, to be called at the beginning of the queue task
-//before while loop.
-
+char data_buffer[100];
 
 //free all dynamic memory that was allocated.
 void deinit_bank(void){
-		for(int i=0;i<3;i++){
+		for(int i=0;i < NUMBER_OF_TELLERS;i++){
 			vPortFree(bank_sim.tellers[i].teller_idle_times);
 			vPortFree(bank_sim.tellers[i].transaction_times);
 		}
@@ -19,17 +18,18 @@ void deinit_bank(void){
 }
 
 void init_bank(void){
-	bank_sim.customers_served=0;
+	bank_sim.customers_pulled_out_of_line=0;
 	bank_sim.max_queue=0;
 	bank_sim.queue=0;
-	bank_sim.tellers=(teller*)pvPortMalloc(sizeof(teller)*3);
+	bank_sim.tellers=(teller*)pvPortMalloc(sizeof(teller)*NUMBER_OF_TELLERS);
 	//teller init
-	for(int i=0;i<3;i++){
+	for(int i=0;i < NUMBER_OF_TELLERS;i++){
 		bank_sim.tellers = teller_init();
 		bank_sim.tellers++;
 	}
 	bank_sim.queue_wait_times=(short*)pvPortMalloc(sizeof(short)*MAX_CUSTOMERS);
 	bank_sim.start_count=__HAL_TIM_GetCounter(&htim2);
+	bank_sim.end_count=bank_sim.start_count + BANK_OPERATION_TIME;
 	bank_sim.bank_open=1;
 	bank_sim.block=xSemaphoreCreateMutex();	
 }
@@ -66,17 +66,20 @@ int get_customers_served(char teller_num){
 //timer_count should be the difference between the current_counter_value and the start value
 //returns number of seconds elapsed
 int convert_cnt_2_seconds(int timer_count){
-		return (timer_count/500000)*600;//get number of simulated seconds that have elapsed.
+		return (timer_count/TIM_CLK_FQ)*6000;//get number of simulated seconds that have elapsed.
+}
+int convert_seconds_2_cnt(int seconds) {
+	return (seconds/6000) * TIM_CLK_FQ;
 }
 current_time average_time_in_queue(void){
 	  int sum_times;
 		int average_time_sec; 
 		current_time average_time;
-		for(int i=0;i<bank_sim.customers_served;i++){
+		for(int i=0;i<bank_sim.customers_pulled_out_of_line;i++){
 			 sum_times+=bank_sim.queue_wait_times[i];
 		}
 		//get average queue wait in terms of simulated seconds
-		average_time_sec=convert_cnt_2_seconds(sum_times/bank_sim.customers_served);
+		average_time_sec=convert_cnt_2_seconds(sum_times/bank_sim.customers_pulled_out_of_line);
 	  average_time.minutes=average_time_sec/60;
 		average_time.seconds=average_time_sec%60;
 		
@@ -119,7 +122,7 @@ current_time max_time_queue(void){
 		int max_time=0;
 		int max_time_sec;
 		current_time time;
-		for(int i=0;i<bank_sim.customers_served;i++){
+		for(int i=0;i<bank_sim.customers_pulled_out_of_line;i++){
 			if(max_time<bank_sim.queue_wait_times[i]){
 				max_time=bank_sim.queue_wait_times[i];
 			}
@@ -171,7 +174,13 @@ int get_total_customers_served(char teller_num){
 }
 
 
+
 //these functions involve USART2 so they are for Elijah to implement
-int get_teller_stats(char teller_num);
+int get_teller_stats(char teller_num){
+	vTaskSuspendAll();
+	HAL_USART_Transmit(&huart2);
+	xTaskResumeAll();
+
+}
 void report_metrics(void);
 

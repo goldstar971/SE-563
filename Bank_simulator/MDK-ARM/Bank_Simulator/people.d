@@ -1,14 +1,14 @@
 bank_simulator\people.o: people.c
-bank_simulator\people.o: ../Inc/people.h
 bank_simulator\people.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
-bank_simulator\people.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-bank_simulator\people.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+bank_simulator\people.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+bank_simulator\people.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 bank_simulator\people.o: ../Inc/FreeRTOSConfig.h
 bank_simulator\people.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 bank_simulator\people.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
 bank_simulator\people.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h
 bank_simulator\people.o: ../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F/portmacro.h
 bank_simulator\people.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h
+bank_simulator\people.o: ../Inc/people.h
 bank_simulator\people.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h
 bank_simulator\people.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
 bank_simulator\people.o: ../Inc/tim.h
@@ -47,3 +47,5 @@ bank_simulator\people.o: ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_tim_e
 bank_simulator\people.o: ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h
 bank_simulator\people.o: ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart_ex.h
 bank_simulator\people.o: ../Inc/usart.h
+bank_simulator\people.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
+bank_simulator\people.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
