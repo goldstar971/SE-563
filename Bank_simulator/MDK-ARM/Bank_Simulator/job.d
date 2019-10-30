@@ -51,3 +51,5 @@ bank_simulator\job.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
 bank_simulator\job.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
 bank_simulator\job.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 bank_simulator\job.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+bank_simulator\job.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+bank_simulator\job.o: ../Inc/usart.h

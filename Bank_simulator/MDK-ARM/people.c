@@ -169,8 +169,8 @@ current_time avg_teller_idle(char teller_num){
 int get_max_queue_depth(void){
 		return bank_sim.max_queue;
 }
-int get_total_customers_served(char teller_num){
-		return bank_sim.tellers[teller_num].customers_served;
+int get_total_customers_served(){
+		return bank_sim.customers_pulled_out_of_line;
 }
 
 

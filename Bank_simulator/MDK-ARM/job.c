@@ -6,11 +6,14 @@
 #include "people.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
+#include "usart.h"
 #include "stm32l4xx_hal_rng.h"
 
 extern bank bank_sim;
 static RNG_HandleTypeDef rng;
 TaskHandle_t task_handles[4];
+uint8_t buffer[100];
 void RNG_INIT() {
 	HAL_RNG_Init(&rng);
 }
@@ -44,10 +47,122 @@ char check_teller_status(void) {
 	return 0;
 }
 
-void print_teller_statistics(int teller) {
+void print_teller_statistics() {
+	current_time Current=get_current_time();
+	int n;
+	n=sprintf((char*)&buffer,"%c%c%c%c",0x1b,0x5b,'2','J');
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	n=sprintf((char*)&buffer,"Time is %d:%d:%d\n",Current.hours,Current.minutes,Current.seconds);
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	n=sprintf((char*)&buffer, "Number of Customers waiting in the queue is: %d\n",bank_sim.queue);
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	for(int i=0;i<3;i++){
+		if(bank_sim.tellers[i].status==1){
+			n=sprintf((char*)&buffer,"Teller %d has served %d \
+				customers and is currently busy\n",i,bank_sim.tellers[i].customers_served);
+		}
+		else{
+			n=sprintf((char*)&buffer,"Teller %d has served %d \
+				customers and is currently idle\n",i,bank_sim.tellers[i].customers_served);
+		}
+		HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	}
 }
 
 void print_all_statistics(void) {
+	int n;
+	current_time Current;
+	n=sprintf((char*)&buffer,"%c%c%c%c",0x1b,0x5b,'2','J');
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	
+	//report customers served
+	n=sprintf((char*)&buffer,"Total number of customers served: %d",get_total_customers_served());
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	n=sprintf((char*)&buffer,"Customers served by teller 1 is: %d\n",get_customers_served(1));
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	n=sprintf((char*)&buffer,"Customers served by teller 2 is: %d\n",get_customers_served(2));
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	n=sprintf((char*)&buffer,"Customers served by teller 3 is: %d\n",get_customers_served(3));
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	Current=average_time_in_queue();
+	
+	//report average time waited in the queue
+	n=sprintf((char*)&buffer,"Average time customers waited in queue is: %d minutes and %d seconds\
+		\n",Current.minutes,Current.seconds);
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	
+	//report average transaction times
+	Current=average_transaction_time(1);
+	n=sprintf((char*)&buffer,"Average transaction time for teller 1 was: %d minutes and %d seconds\
+		\n",Current.minutes,Current.seconds);
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	Current=average_transaction_time(2);
+	n=sprintf((char*)&buffer,"Average transaction time for teller 2 was: %d minutes and %d seconds\
+		\n",Current.minutes,Current.seconds);
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	Current=average_transaction_time(3);
+	n=sprintf((char*)&buffer,"Average transaction time for teller 3 was: %d minutes and %d seconds\
+		\n",Current.minutes,Current.seconds);
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	
+	//report teller idle times
+	Current=avg_teller_idle(1);
+	n=sprintf((char*)&buffer,"Average idle time for teller 1 was: %d minutes and %d seconds\
+		\n",Current.minutes,Current.seconds);
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	Current=avg_teller_idle(2);
+	n=sprintf((char*)&buffer,"Average idle time for teller 2 was: %d minutes and %d seconds\
+		\n",Current.minutes,Current.seconds);
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	Current=avg_teller_idle(3);
+	n=sprintf((char*)&buffer,"Average idle time for teller 3 was: %d minutes and %d seconds\
+		\n",Current.minutes,Current.seconds);
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	
+	//report maximum wait time in queue
+	Current=max_time_queue();
+	n=sprintf((char*)&buffer,"Maximum customer wait time in queue was: %d minutes and %d seconds\
+		\n",Current.minutes,Current.seconds);
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	
+	//report maximum idle time for tellers
+	Current=max_teller_idle(1);
+	n=sprintf((char*)&buffer,"Maximum idle time for teller 1 was: %d minutes and %d seconds\
+		\n",Current.minutes,Current.seconds);
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	Current=max_teller_idle(2);
+	n=sprintf((char*)&buffer,"Maximum idle time for teller 2 was: %d minutes and %d seconds\
+		\n",Current.minutes,Current.seconds);
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	Current=max_teller_idle(3);
+	n=sprintf((char*)&buffer,"Maximum idle time for teller 3 was: %d minutes and %d seconds\
+		\n",Current.minutes,Current.seconds);
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	
+	//report maximum transaction times for tellers
+	Current=max_transaction_time(1);
+	n=sprintf((char*)&buffer,"Maximum transaction time for teller 1 was: %d minutes and %d seconds\
+		\n",Current.minutes,Current.seconds);
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	Current=max_transaction_time(2);
+	n=sprintf((char*)&buffer,"Maximum transaction time for teller 2 was: %d minutes and %d seconds\
+		\n",Current.minutes,Current.seconds);
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	Current=max_transaction_time(3);
+	n=sprintf((char*)&buffer,"Maximum transaction time for teller 3 was: %d minutes and %d seconds\
+		\n",Current.minutes,Current.seconds);
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	
+	//report maximum queue depth
+	
+	n=sprintf((char*)&buffer,"Maximum number of customers in the queue was: %d\
+		\n",get_max_queue_depth());
+	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+	
+
+	
+	
+	
 }
 
 // Task responsible for generating customers and placing them on the queue. Main Task for program.
@@ -93,6 +208,9 @@ void operate_bank(void *parameters) {
 			deinit_bank();
 			vTaskDelete(task_handles[3]);	
 		}
+			xSemaphoreTake(bank_sim.block, portMAX_DELAY );
+			print_teller_statistics();
+			xSemaphoreGive(bank_sim.block);
 	}
 	
 	
