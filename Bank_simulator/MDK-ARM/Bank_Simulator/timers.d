@@ -1,8 +1,8 @@
 bank_simulator\timers.o: ../Middlewares/Third_Party/FreeRTOS/Source/timers.c
-bank_simulator\timers.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+bank_simulator\timers.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 bank_simulator\timers.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
-bank_simulator\timers.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-bank_simulator\timers.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+bank_simulator\timers.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+bank_simulator\timers.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 bank_simulator\timers.o: ../Inc/FreeRTOSConfig.h
 bank_simulator\timers.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 bank_simulator\timers.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h

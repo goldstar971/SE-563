@@ -175,12 +175,5 @@ int get_total_customers_served(char teller_num){
 
 
 
-//these functions involve USART2 so they are for Elijah to implement
-int get_teller_stats(char teller_num){
-	vTaskSuspendAll();
-	HAL_USART_Transmit(&huart2);
-	xTaskResumeAll();
 
-}
-void report_metrics(void);
 

@@ -1,7 +1,7 @@
 bank_simulator\people.o: people.c
 bank_simulator\people.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
-bank_simulator\people.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-bank_simulator\people.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+bank_simulator\people.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+bank_simulator\people.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 bank_simulator\people.o: ../Inc/FreeRTOSConfig.h
 bank_simulator\people.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 bank_simulator\people.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h

@@ -1,7 +1,7 @@
 bank_simulator\croutine.o: ../Middlewares/Third_Party/FreeRTOS/Source/croutine.c
 bank_simulator\croutine.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
-bank_simulator\croutine.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-bank_simulator\croutine.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+bank_simulator\croutine.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+bank_simulator\croutine.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 bank_simulator\croutine.o: ../Inc/FreeRTOSConfig.h
 bank_simulator\croutine.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 bank_simulator\croutine.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
