@@ -6,20 +6,21 @@
 #include "people.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h> 
 #include "stm32l4xx_hal_rng.h"
+#include "stm32l4xx_hal_uart.h"
 
 extern bank bank_sim;
-static RNG_HandleTypeDef rng;
+extern RNG_HandleTypeDef hrng;
+extern UART_HandleTypeDef huart2;
+
 TaskHandle_t task_handles[4];
-void RNG_INIT() {
-	HAL_RNG_Init(&rng);
-}
 
 // Generates a random number of seconds in simulated time before the next customer. Between 60 and 240 seconds.
 int generate_customer_time(void) {
 	int *number;
 	
-	HAL_RNG_GenerateRandomNumber(&rng, (uint32_t *) number);
+	HAL_RNG_GenerateRandomNumber(&hrng, (uint32_t *) number);
 	
 	return convert_seconds_2_cnt(((*number)%180)+61);
 }
@@ -28,7 +29,7 @@ int generate_customer_time(void) {
 int generate_teller_time(void){
 	int *number;
 	
-	HAL_RNG_GenerateRandomNumber(&rng, (uint32_t *) number);
+	HAL_RNG_GenerateRandomNumber(&hrng, (uint32_t *) number);
 	
 	return convert_seconds_2_cnt(((*number)%450)+31);
 }
@@ -54,6 +55,12 @@ void print_all_statistics(void) {
 // Creates and ends the teller_handle_customers tasks.
 void operate_bank(void *parameters) {
 	init_bank();
+	
+	int bufferSize;
+	char *buffer;
+	
+	bufferSize = sprintf((char *)buffer,"\r\nEnter new value for lower limit in the range 50-9950: ");
+	HAL_UART_Transmit_IT(&huart2, (uint8_t *) buffer, bufferSize);
 	
 	int time_for_next_customer = 0;
 	int customers_generated=0;
@@ -91,7 +98,10 @@ void operate_bank(void *parameters) {
 			}
 			print_all_statistics();
 			deinit_bank();
-			vTaskDelete(task_handles[3]);	
+			vTaskDelete(task_handles[3]);
+			
+			HAL_UART_MspDeInit(&huart2);
+			HAL_RNG_MspDeInit(&hrng);
 		}
 	}
 	
@@ -171,6 +181,10 @@ void teller_handle_customers(void *teller_number) {
 }
 
 void create_tasks(void) {
+	HAL_RNG_MspDeInit (&hrng);
+	HAL_UART_MspInit (&huart2);
+	
+	
 	xTaskCreate(operate_bank, "Bank Simulation", 1000, NULL, 1, task_handles[3]);
 	
 	for(int i = 0; i <= (NUMBER_OF_TELLERS - 1); i++) {

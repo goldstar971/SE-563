@@ -51,6 +51,7 @@ int main(void)
 	MX_USART2_UART_Init();
 
 	/* USER CODE BEGIN 2 */
+	
 	create_tasks();
 	
 	/* USER CODE END 2 */
