@@ -53,7 +53,6 @@ current_time max_teller_idle(char teller_num);
 current_time avg_teller_idle(char teller_num);
 int get_max_queue_depth(void);
 int get_total_customers_served(char teller_num);
-int get_teller_stats(char teller_num);
-void report_metrics(void);
+
 
 #endif

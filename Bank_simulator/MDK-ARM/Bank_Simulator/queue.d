@@ -1,9 +1,9 @@
 bank_simulator\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/queue.c
-bank_simulator\queue.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-bank_simulator\queue.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+bank_simulator\queue.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+bank_simulator\queue.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 bank_simulator\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
-bank_simulator\queue.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-bank_simulator\queue.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+bank_simulator\queue.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+bank_simulator\queue.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 bank_simulator\queue.o: ../Inc/FreeRTOSConfig.h
 bank_simulator\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 bank_simulator\queue.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
