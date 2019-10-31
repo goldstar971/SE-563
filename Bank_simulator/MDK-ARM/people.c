@@ -14,7 +14,7 @@ void deinit_bank(void){
 			vPortFree(bank_sim.tellers[i].teller_idle_times);
 			vPortFree(bank_sim.tellers[i].transaction_times);
 		}
-		vPortFree(bank_sim.tellers);
+		vPortFree((void*)bank_sim.tellers);
 }
 
 void init_bank(void){
@@ -24,35 +24,35 @@ void init_bank(void){
 	bank_sim.tellers=(teller*)pvPortMalloc(sizeof(teller)*NUMBER_OF_TELLERS);
 	//teller init
 	for(int i=0;i < NUMBER_OF_TELLERS;i++){
-		bank_sim.tellers = teller_init();
-		bank_sim.tellers++;
+		 teller_init(bank_sim.tellers++);
 	}
-	bank_sim.queue_wait_times=(short*)pvPortMalloc(sizeof(short)*MAX_CUSTOMERS);
-	bank_sim.start_count=__HAL_TIM_GetCounter(&htim2);
+	bank_sim.tellers-=3;
+	bank_sim.queue_wait_times=(int*)pvPortMalloc(sizeof(short)*MAX_CUSTOMERS);
+	bank_sim.start_count=TIM2->CNT;
 	bank_sim.end_count=bank_sim.start_count + BANK_OPERATION_TIME;
 	bank_sim.bank_open=1;
 	bank_sim.block=xSemaphoreCreateMutex();	
 }
 
-teller* teller_init(void){
-	 teller* Teller =(teller*)pvPortMalloc(sizeof(teller));
-	 Teller->status=idle;
+void teller_init(teller* Teller){
+	 Teller->status=0;
 	 Teller->customers_served=0;
-	 Teller->teller_idle_times=(short*)pvPortMalloc(sizeof(short)*MAX_CUSTOMERS);
-	 Teller->transaction_times=(short*)pvPortMalloc(sizeof(short)*MAX_CUSTOMERS);
-	 return Teller;	
+	 Teller->teller_idle_times=(int*)pvPortMalloc(sizeof(short)*MAX_CUSTOMERS);
+	 Teller->transaction_times=(int*)pvPortMalloc(sizeof(short)*MAX_CUSTOMERS);
+	 return;	
 }
 
 
 //returns current simulated time
 current_time get_current_time(){
-		int elapsed_count=__HAL_TIM_GetCounter(&htim2)-bank_sim.start_count;
+		current_time curr_time={0};
+		int elapsed_count=TIM2->CNT-bank_sim.start_count;
 		int elapsed_seconds=convert_cnt_2_seconds(elapsed_count);
 	  int hours=elapsed_seconds/3600;
 		int minutes=(elapsed_seconds%3600)/60;
 		int seconds=(elapsed_seconds%3600)%60;
-	  current_time curr_time;
-		curr_time.hours=7+hours;
+	 
+		curr_time.hours=9+hours;
 		curr_time.minutes=minutes;
 		curr_time.seconds=seconds;
 		return curr_time;
@@ -66,15 +66,15 @@ int get_customers_served(char teller_num){
 //timer_count should be the difference between the current_counter_value and the start value
 //returns number of seconds elapsed
 int convert_cnt_2_seconds(int timer_count){
-		return (timer_count/TIM_CLK_FQ)*6000;//get number of simulated seconds that have elapsed.
+		return (int)((timer_count/TIM_CLK_FQ)*600.0);//get number of simulated seconds that have elapsed.
 }
 int convert_seconds_2_cnt(int seconds) {
-	return (seconds/6000) * TIM_CLK_FQ;
+	return (seconds/600.0) * TIM_CLK_FQ;
 }
 current_time average_time_in_queue(void){
-	  int sum_times;
+	  int sum_times=0;
 		int average_time_sec; 
-		current_time average_time;
+		current_time average_time={0};
 		for(int i=0;i<bank_sim.customers_pulled_out_of_line;i++){
 			 sum_times+=bank_sim.queue_wait_times[i];
 		}
@@ -88,8 +88,8 @@ current_time average_time_in_queue(void){
 }
 current_time average_transaction_time(char teller_num){
 		int sum_times=0;
-		int average_time_sec; 
-		current_time average_time;
+		int average_time_sec=0; 
+		current_time average_time={0};
 		for(int i=0;i<bank_sim.tellers[teller_num].customers_served;i++){
 			 sum_times+=bank_sim.tellers[teller_num].transaction_times[i];
 		}
@@ -102,8 +102,8 @@ current_time average_transaction_time(char teller_num){
 }
 current_time max_transaction_time(char teller_num){
 		int max_time=0;
-		int max_time_sec;
-		current_time time;
+		int max_time_sec=0;
+		current_time time={0};
 		for(int i=0;i<bank_sim.tellers[teller_num].customers_served;i++){ 
 			if(max_time<bank_sim.tellers[teller_num].transaction_times[i]){
 				max_time=bank_sim.tellers[teller_num].transaction_times[i];
@@ -120,8 +120,8 @@ current_time max_transaction_time(char teller_num){
 		
 current_time max_time_queue(void){
 		int max_time=0;
-		int max_time_sec;
-		current_time time;
+		int max_time_sec=0;
+		current_time time={0};
 		for(int i=0;i<bank_sim.customers_pulled_out_of_line;i++){
 			if(max_time<bank_sim.queue_wait_times[i]){
 				max_time=bank_sim.queue_wait_times[i];
@@ -136,8 +136,8 @@ current_time max_time_queue(void){
 }
 current_time max_teller_idle(char teller_num){
 	int max_time=0;
-		int max_time_sec;
-		current_time time;
+		int max_time_sec=0;
+		current_time time={0};
 		for(int i=0;i<bank_sim.tellers[teller_num].customers_served;i++){ 
 			if(max_time<bank_sim.tellers[teller_num].teller_idle_times[i]){
 				max_time=bank_sim.tellers[teller_num].teller_idle_times[i];
@@ -151,10 +151,9 @@ current_time max_teller_idle(char teller_num){
 		return time;
 }
 current_time avg_teller_idle(char teller_num){
-		current_time average_transaction_time(char teller_num);
 		int sum_times=0;
-		int average_time_sec; 
-		current_time average_time;
+		int average_time_sec=0; 
+		current_time average_time={0};
 		for(int i=0;i<bank_sim.tellers[teller_num].customers_served;i++){
 			 sum_times+=bank_sim.tellers[teller_num].teller_idle_times[i];
 		}
