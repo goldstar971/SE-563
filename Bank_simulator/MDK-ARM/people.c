@@ -10,10 +10,6 @@ char data_buffer[100];
 
 //free all dynamic memory that was allocated.
 void deinit_bank(void){
-		for(int i=0;i < NUMBER_OF_TELLERS;i++){
-			vPortFree(bank_sim.tellers[i].teller_idle_times);
-			vPortFree(bank_sim.tellers[i].transaction_times);
-		}
 		vPortFree((void*)bank_sim.tellers);
 }
 
@@ -27,7 +23,6 @@ void init_bank(void){
 		 teller_init(bank_sim.tellers++);
 	}
 	bank_sim.tellers-=3;
-	bank_sim.queue_wait_times=(int*)pvPortMalloc(sizeof(short)*MAX_CUSTOMERS);
 	bank_sim.start_count=TIM2->CNT;
 	bank_sim.end_count=bank_sim.start_count + BANK_OPERATION_TIME;
 	bank_sim.bank_open=1;
@@ -37,8 +32,6 @@ void init_bank(void){
 void teller_init(teller* Teller){
 	 Teller->status=0;
 	 Teller->customers_served=0;
-	 Teller->teller_idle_times=(int*)pvPortMalloc(sizeof(short)*MAX_CUSTOMERS);
-	 Teller->transaction_times=(int*)pvPortMalloc(sizeof(short)*MAX_CUSTOMERS);
 	 return;	
 }
 

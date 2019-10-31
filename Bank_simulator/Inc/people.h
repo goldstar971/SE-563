@@ -9,7 +9,7 @@
 #define BANK_OPERATION_TIME ( 500000*42)
 #define TIM_CLK_FQ ( 500000.0 )
 
-typedef struct{
+typedef volatile struct{
 	int seconds;
 	int minutes;
 	int hours;
@@ -19,8 +19,8 @@ typedef struct{
 
 
 typedef volatile struct{
-	int *transaction_times;
-	int *teller_idle_times;
+	int transaction_times[MAX_CUSTOMERS];
+	int teller_idle_times[MAX_CUSTOMERS];
 	char status;
 	short customers_served;
 } teller;
@@ -32,7 +32,7 @@ typedef volatile struct{
 	char bank_open;
 	short max_queue;
 	int customers_pulled_out_of_line;
-	int *queue_wait_times;
+	int queue_wait_times[MAX_CUSTOMERS];
 	int start_count;
 	int end_count;
 	SemaphoreHandle_t block;

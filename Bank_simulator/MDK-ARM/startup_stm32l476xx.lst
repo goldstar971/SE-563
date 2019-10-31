@@ -682,12 +682,12 @@ ARM Macro Assembler    Page 11
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
 erwork --depend=bank_simulator\startup_stm32l476xx.d -obank_simulator\startup_s
-tm32l476xx.o -I..\\Inc -I.\RTE\_Bank_Simulator -I"C:\Users\matthew gould\AppDat
-a\Local\Arm\Packs\ARM\CMSIS\5.5.1\CMSIS\Core\Include" -I"C:\Users\matthew gould
-\AppData\Local\Arm\Packs\Keil\STM32L4xx_DFP\2.2.0\Drivers\CMSIS\Device\ST\STM32
-L4xx\Include" --predefine="__EVAL SETA 1" --predefine="__MICROLIB SETA 1" --pre
-define="__UVISION_VERSION SETA 528" --predefine="_RTE_ SETA 1" --predefine="STM
-32L476xx SETA 1" --list=startup_stm32l476xx.lst startup_stm32l476xx.s
+tm32l476xx.o -I..\\Inc -I.\RTE\_Bank_Simulator -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\
+5.4.0\CMSIS\Core\Include -IC:\Keil_v5\ARM\PACK\Keil\STM32L4xx_DFP\2.0.0\Drivers
+\CMSIS\Device\ST\STM32L4xx\Include --predefine="__EVAL SETA 1" --predefine="__M
+ICROLIB SETA 1" --predefine="__UVISION_VERSION SETA 525" --predefine="_RTE_ SET
+A 1" --predefine="STM32L476xx SETA 1" --list=startup_stm32l476xx.lst startup_st
+m32l476xx.s
 
 
 

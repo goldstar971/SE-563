@@ -14,6 +14,7 @@ extern bank bank_sim;
 static RNG_HandleTypeDef rng;
 TaskHandle_t task_handles[4];
 uint8_t buffer[100];
+
 void RNG_INIT() {
 	HAL_RNG_Init(&rng);
 }
@@ -41,16 +42,17 @@ char check_teller_status(void) {
 }
 
 void print_teller_statistics() {
-	vTaskSuspendAll();
+	
 	current_time Current=get_current_time();
 	int n;
-	n=sprintf((char*)&buffer,"%c%c%c%c%c%c%c",0x1b,0x5b,'2','J',0x1b,0x5b,'H');
-	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
+    n=sprintf((char*)&buffer,"%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",0x1b,0x5b,'H',0x1b,0x5b,'1',
+	'J',0x1b,0x5b,'3','J',0x1b,0x5b,'2','J');
+    HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
 	n=sprintf((char*)&buffer,"Time is %02d:%02d:%02d\r\n",Current.hours,Current.minutes,Current.seconds);
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
-	
+	xSemaphoreTake(bank_sim.block, portMAX_DELAY );
 	n=sprintf((char*)&buffer, "Number of Customers waiting in the queue is: %d\r\n",bank_sim.queue);
-	
+	xSemaphoreGive(bank_sim.block); 
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
 	for(int i=0;i<NUMBER_OF_TELLERS;i++){
 		if(bank_sim.tellers[i].status==1){
@@ -61,15 +63,13 @@ void print_teller_statistics() {
 		}
 		HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
 	}
-	xTaskResumeAll();
+	;
 }
 
 void print_all_statistics(void) {
 	int n;
 	current_time Current;
-	n=sprintf((char*)&buffer,"%c%c%c%c%c%c%c",0x1b,0x5b,'H',0x1b,0x5b,'2','J');
-	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
-	
+
 	//report customers served
 	n=sprintf((char*)&buffer,"Total number of customers served: %d\r\n",get_total_customers_served());
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
@@ -87,29 +87,29 @@ void print_all_statistics(void) {
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
 	
 	//report average transaction times
-	Current=average_transaction_time(1);
+	Current=average_transaction_time(0);
 	n=sprintf((char*)&buffer,"Average transaction time for teller 1 was: %d minutes and %d seconds\
 		\r\n",Current.minutes,Current.seconds);
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
-	Current=average_transaction_time(2);
+	Current=average_transaction_time(1);
 	n=sprintf((char*)&buffer,"Average transaction time for teller 2 was: %d minutes and %d seconds\
 		\r\n",Current.minutes,Current.seconds);
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
-	Current=average_transaction_time(3);
+	Current=average_transaction_time(2);
 	n=sprintf((char*)&buffer,"Average transaction time for teller 3 was: %d minutes and %d seconds\
 		\r\n",Current.minutes,Current.seconds);
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
 	
 	//report teller idle times
-	Current=avg_teller_idle(1);
+	Current=avg_teller_idle(0);
 	n=sprintf((char*)&buffer,"Average idle time for teller 1 was: %d minutes and %d seconds\
 		\r\n",Current.minutes,Current.seconds);
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
-	Current=avg_teller_idle(2);
+	Current=avg_teller_idle(1);
 	n=sprintf((char*)&buffer,"Average idle time for teller 2 was: %d minutes and %d seconds\
 		\r\n",Current.minutes,Current.seconds);
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
-	Current=avg_teller_idle(3);
+	Current=avg_teller_idle(2);
 	n=sprintf((char*)&buffer,"Average idle time for teller 3 was: %d minutes and %d seconds\
 		\r\n",Current.minutes,Current.seconds);
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
@@ -121,29 +121,29 @@ void print_all_statistics(void) {
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
 	
 	//report maximum idle time for tellers
-	Current=max_teller_idle(1);
+	Current=max_teller_idle(0);
 	n=sprintf((char*)&buffer,"Maximum idle time for teller 1 was: %d minutes and %d seconds\
 		\r\n",Current.minutes,Current.seconds);
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
-	Current=max_teller_idle(2);
+	Current=max_teller_idle(1);
 	n=sprintf((char*)&buffer,"Maximum idle time for teller 2 was: %d minutes and %d seconds\
 		\r\n",Current.minutes,Current.seconds);
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
-	Current=max_teller_idle(3);
+	Current=max_teller_idle(2);
 	n=sprintf((char*)&buffer,"Maximum idle time for teller 3 was: %d minutes and %d seconds\
 		\r\n",Current.minutes,Current.seconds);
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
 	
 	//report maximum transaction times for tellers
-	Current=max_transaction_time(1);
+	Current=max_transaction_time(0);
 	n=sprintf((char*)&buffer,"Maximum transaction time for teller 1 was: %d minutes and %d seconds\
 		\r\n",Current.minutes,Current.seconds);
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
-	Current=max_transaction_time(2);
+	Current=max_transaction_time(1);
 	n=sprintf((char*)&buffer,"Maximum transaction time for teller 2 was: %d minutes and %d seconds\
 		\r\n",Current.minutes,Current.seconds);
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
-	Current=max_transaction_time(3);
+	Current=max_transaction_time(2);
 	n=sprintf((char*)&buffer,"Maximum transaction time for teller 3 was: %d minutes and %d seconds\
 		\r\n",Current.minutes,Current.seconds);
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
@@ -163,7 +163,7 @@ void print_all_statistics(void) {
 // Task responsible for generating customers and placing them on the queue. Main Task for program.
 // Creates and ends the teller_handle_customers tasks.
 void operate_bank(void *parameters) {
-	int time_for_next_customer = 0;
+	 int time_for_next_customer = 0;
 	int customers_generated=0;
 	
 	
@@ -209,24 +209,7 @@ void operate_bank(void *parameters) {
 	
 }
 
-/*queue task
-init bank structure (starts timer and opens)
-start teller tasks
-while(1){
-	if(timer>time to generate customer and bank is not closed){
-		generate customer (increment queue)
-		generate random time for next customer
-	}
-	print diagnostics for tellers
-	if (time to close<time){
-		close bank
-	}
-	if all tellers idle and bank is closed and queue is empty{
-		end teller threads
-		print out bank statistics
-	}
-}
-*/
+
 
 // Task responsible for pulling customers off the queue and handling transaction times.
 void teller_handle_customers(void *teller_number) {
@@ -237,34 +220,30 @@ void teller_handle_customers(void *teller_number) {
 	
 	int transaction_start_time = 0;	// TIM Time - Start of Transaction
 	int transaction_end_time;				// value of TIM timer count at end of transaction
+	int transaction_duration;
 	int idle_start_time = TIM2->CNT;	// TIM Time - Start of Teller Idle
 	int idle_idx = 0;
 	
 
 	while(1) {
-
-		
 		
 		// Customer Available and Teller Open
 		xSemaphoreTake(bank_sim.block, portMAX_DELAY );
 		if(bank_sim.queue && (bank_sim.tellers[teller_assigned].status == 0 || TIM2->CNT>= transaction_end_time)) {
-			if(teller_assigned==2){
-					tellers_assigned=tellers_assigned;
-			}
+			
 			// Set New Times
 			transaction_start_time = TIM2->CNT;
-			transaction_end_time = generate_teller_time()+transaction_start_time;
-			bank_sim.tellers[teller_assigned].transaction_times[bank_sim.tellers[teller_assigned].customers_served]=transaction_end_time;
+			transaction_duration=generate_teller_time();
+			transaction_end_time = transaction_duration+transaction_start_time;
+			bank_sim.tellers[teller_assigned].transaction_times[bank_sim.tellers[teller_assigned].customers_served]=transaction_duration;
 			// Calculate Customer Wait Time
-			
 			// Store Teller Wait Time
 			if(bank_sim.tellers[teller_assigned].status == 0) {
 				bank_sim.tellers[teller_assigned].teller_idle_times[idle_idx] = TIM2->CNT - idle_start_time;
 				idle_idx++;
 			}
-			
 			// Update Bank and Teller
-			if(bank_sim.tellers[teller_assigned].status){		
+			if(bank_sim.tellers[teller_assigned].status){
 				bank_sim.queue--;
 				bank_sim.queue_wait_times[bank_sim.customers_pulled_out_of_line]=TIM2->CNT-bank_sim.queue_wait_times[bank_sim.customers_pulled_out_of_line];
 				bank_sim.customers_pulled_out_of_line++;
@@ -274,32 +253,19 @@ void teller_handle_customers(void *teller_number) {
 		}
 		// Worker Finished and Can't Pull from Queue - Idle
 		else if( TIM2->CNT>= transaction_end_time && (bank_sim.tellers[teller_assigned].status == 1) && !bank_sim.queue) {
-			
 			bank_sim.tellers[teller_assigned].status = 0;
 			idle_start_time = TIM2->CNT;
 		}
 		xSemaphoreGive(bank_sim.block);
 		
-	
 	}
 }
 
 void create_tasks(void) {
 	xTaskCreate(operate_bank, "Bank Simulation", 2000, NULL, 1, task_handles[3]);
 	xTaskCreate(teller_handle_customers, "Teller", 2000, NULL, 1, task_handles[0]);
-	//xTaskCreate(teller_handle_customers, "Teller1", 2000, NULL, 1, task_handles[1]);
-	//xTaskCreate(teller_handle_customers, "Teller2", 2000, NULL, 1, task_handles[2]);	
+	xTaskCreate(teller_handle_customers, "Teller1", 3000, NULL, 1, task_handles[1]);
+	xTaskCreate(teller_handle_customers, "Teller2", 3000, NULL, 1, task_handles[2]);	
 	
 }
 
-/*
-teller task
-if (queue is greater than 0 and (teller is idle or time>transaction time)) 
-	generate random transaction time
-	take customer from queue (decrement it)
-	calculate time customer waited in queue and store in array using customers serviced
-	increment number of customers serviced
-else if time>transcition time and teller is not idle and queue is empty
-	record time (for recording lengths of being idle
-)
-*/

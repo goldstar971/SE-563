@@ -54,3 +54,4 @@ bank_simulator\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.
 bank_simulator\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
 bank_simulator\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
 bank_simulator\main.o: ../Inc/job.h
+bank_simulator\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
