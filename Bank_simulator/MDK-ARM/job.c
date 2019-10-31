@@ -42,7 +42,7 @@ char check_teller_status(void) {
 }
 
 void print_teller_statistics() {
-	
+	vTaskSuspendAll();	
 	current_time Current=get_current_time();
 	int n;
     n=sprintf((char*)&buffer,"%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",0x1b,0x5b,'H',0x1b,0x5b,'1',
@@ -50,9 +50,7 @@ void print_teller_statistics() {
     HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
 	n=sprintf((char*)&buffer,"Time is %02d:%02d:%02d\r\n",Current.hours,Current.minutes,Current.seconds);
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
-	xSemaphoreTake(bank_sim.block, portMAX_DELAY );
 	n=sprintf((char*)&buffer, "Number of Customers waiting in the queue is: %d\r\n",bank_sim.queue);
-	xSemaphoreGive(bank_sim.block); 
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
 	for(int i=0;i<NUMBER_OF_TELLERS;i++){
 		if(bank_sim.tellers[i].status==1){
@@ -63,7 +61,7 @@ void print_teller_statistics() {
 		}
 		HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
 	}
-	;
+	xTaskResumeAll();
 }
 
 void print_all_statistics(void) {
