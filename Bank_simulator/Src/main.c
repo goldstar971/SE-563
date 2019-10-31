@@ -30,11 +30,14 @@
 #include "stddef.h"
 #include "stdint.h"
 #include "job.h" 
+#include <stdio.h>
 
 void SystemClock_Config(void);
 void MX_FREERTOS_Init(void);
-
+extern uint8_t buffer[];
 bank bank_sim;
+
+
 
 int main(void)
 { 
@@ -55,11 +58,13 @@ int main(void)
 	create_tasks();
 	
 	/* USER CODE END 2 */
-
+	
 	/* Call init function for freertos objects (in freertos.c) */
 	MX_FREERTOS_Init(); 
-
+	//initalize 
+	init_bank();
 	/* Start scheduler */
+	
 	osKernelStart();
 
 	/* We should never get here as control is now taken by the scheduler */
