@@ -6,8 +6,8 @@
 #define MAX_QUEUE_SIZE ( 270 )
 #define MAX_CUSTOMERS ( 420 )
 #define NUMBER_OF_TELLERS ( 3 )
-#define BANK_OPERATION_TIME ( 500000 * 60 * 7 )
-#define TIM_CLK_FQ ( 500000 )
+#define BANK_OPERATION_TIME ( 500000*42)
+#define TIM_CLK_FQ ( 500000.0 )
 
 typedef struct{
 	int seconds;
@@ -16,29 +16,29 @@ typedef struct{
 
 } current_time;
 
-typedef enum {idle,busy} teller_state;
 
-typedef struct{
-short *transaction_times;
-short *teller_idle_times;
-teller_state status;
-short customers_served;
+
+typedef volatile struct{
+	int *transaction_times;
+	int *teller_idle_times;
+	char status;
+	short customers_served;
 } teller;
 
 
-typedef struct{
+typedef volatile struct{
 	teller *tellers;
 	short queue;
 	char bank_open;
 	short max_queue;
-	short customers_pulled_out_of_line;
-	short *queue_wait_times;
+	int customers_pulled_out_of_line;
+	int *queue_wait_times;
 	int start_count;
 	int end_count;
 	SemaphoreHandle_t block;
 }bank;
 
-teller* teller_init(void);
+void teller_init(teller *Teller);
 void init_bank(void);
 void deinit_bank(void);
 current_time get_current_time(void);
