@@ -1,37 +1,61 @@
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 #include "job.h"
 #include "main.h"
 #include "tim.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "people.h"
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 #include "usart.h"
 #include "stm32l4xx_hal_rng.h"
+
+// Global Variables
 int tellers_assigned;
 extern bank bank_sim;
 static RNG_HandleTypeDef rng;
 TaskHandle_t task_handles[4];
 uint8_t buffer[100];
 
+/***************************************************************************
+* Purpose: Initializes the RNG_HandleTypeDef global variable. 
+* Input: void
+* Output: void
+***************************************************************************/
 void RNG_INIT() {
 	HAL_RNG_Init(&rng);
 }
 
-// Generates a random number of seconds in simulated time before the next customer. Between 60 and 240 seconds.
+/***************************************************************************
+* Purpose: Generates a random number of timer ticks that must tick before
+*					 the next customer may enter the bank. The generated number of
+*					 ticks will be equivalent to 60 - 240 seconds of simulated time.
+* Input: void
+* Output: int Number of ticks required before the next customer can enter
+*					the bank.
+***************************************************************************/
 int generate_customer_time(void) {
 	return convert_seconds_2_cnt(((RNG->DR)%180)+61);
 }
 
-// Generates a random number of seconds in simulated time for teller to handle the customer. Between 30 and 480 seconds.
+/***************************************************************************
+* Purpose: Generates a random number of timer ticks that must tick that
+*					 represents the number of ticks required for a teller to complete
+*					 a transaction with a customer. Number of ticks generated is
+*					 equivalent to 30 - 480 seconds of simulated time.
+* Input: void
+* Output: int Number of ticks required for the teller to complete the
+*					customer transaction.
+***************************************************************************/
 int generate_teller_time(void){
-	
 	return convert_seconds_2_cnt(((RNG->DR)%450)+31);
 }
 
-// Checks the Status of the Tellers. If all Tellers are idle return 0,
-// else return 1. Tellers are either busy or idle.
+/***************************************************************************
+* Purpose: Checks the status of the tellers in the bank global variable.
+* Input: void
+* Output: int 0 if all the tellers are idle, 1 otherwise.
+***************************************************************************/
 char check_teller_status(void) {
 	for(int i = 0; i <= (NUMBER_OF_TELLERS-1); i++) {
 		if(bank_sim.tellers->status == 1){
@@ -41,6 +65,12 @@ char check_teller_status(void) {
 	return 0;
 }
 
+/***************************************************************************
+* Purpose: Prints the statistics for all the tellers in the bank global
+*					 variable.
+* Input: void
+* Output: void
+***************************************************************************/
 void print_teller_statistics() {
 	vTaskSuspendAll();	
 	current_time Current=get_current_time();
@@ -64,6 +94,12 @@ void print_teller_statistics() {
 	xTaskResumeAll();
 }
 
+/***************************************************************************
+* Purpose: Prints all of the statistics and metrics at the end of the
+*					 program. It is expected that the bank is done being simulated.
+* Input: void
+* Output: void
+***************************************************************************/
 void print_all_statistics(void) {
 	int n;
 	current_time Current;
@@ -151,17 +187,17 @@ void print_all_statistics(void) {
 	n=sprintf((char*)&buffer,"Maximum number of customers in the queue was: %d\
 		\r\n",get_max_queue_depth());
 	HAL_UART_Transmit(&huart2,buffer,n,HAL_MAX_DELAY);
-	
-
-	
-	
-	
 }
 
-// Task responsible for generating customers and placing them on the queue. Main Task for program.
-// Creates and ends the teller_handle_customers tasks.
+/***************************************************************************
+* Purpose: Task simulating the queue for the bank. Creates customers and
+*					 adds them to the queue in the bank global variable. Records
+*					 appropriate metrics.
+* Input: void *parameters Parameters for the task.
+* Output: void
+***************************************************************************/
 void operate_bank(void *parameters) {
-	 int time_for_next_customer = 0;
+	int time_for_next_customer = 0;
 	int customers_generated=0;
 	
 	
@@ -203,13 +239,16 @@ void operate_bank(void *parameters) {
 		}
 			print_teller_statistics();
 	}
-	
-	
 }
 
-
-
-// Task responsible for pulling customers off the queue and handling transaction times.
+/***************************************************************************
+* Purpose: Task responsible for pulling customers off the queue and handling
+					 transaction times. Records appropriate metrics. There is one of
+					 these tasks for every teller in the bank global variable.
+* Input: void *teller_number Index of the corresponding teller struct in the
+				 bank global variable.
+* Output: void
+***************************************************************************/
 void teller_handle_customers(void *teller_number) {
 
 	xSemaphoreTake(bank_sim.block, portMAX_DELAY );
@@ -259,6 +298,13 @@ void teller_handle_customers(void *teller_number) {
 	}
 }
 
+/***************************************************************************
+* Purpose: Creates all of the tasks for the program. Spawns a task for the
+					 bank, simulating the queue, and a teller task for each teller in
+					 the bank struct.
+* Input: void
+* Output: void
+***************************************************************************/
 void create_tasks(void) {
 	xTaskCreate(operate_bank, "Bank Simulation", 2000, NULL, 1, task_handles[3]);
 	xTaskCreate(teller_handle_customers, "Teller", 2000, NULL, 1, task_handles[0]);

@@ -54,15 +54,14 @@ int main(void)
 	MX_USART2_UART_Init();
 
 	/* USER CODE BEGIN 2 */
-	
+	init_bank();
 	create_tasks();
 	
 	/* USER CODE END 2 */
 	
 	/* Call init function for freertos objects (in freertos.c) */
 	MX_FREERTOS_Init(); 
-	//initalize 
-	init_bank();
+	
 	/* Start scheduler */
 	
 	osKernelStart();
