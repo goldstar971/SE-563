@@ -1,0 +1,9 @@
+servo_control_rtos\main_old.o: main_old.c
+servo_control_rtos\main_old.o: ../Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l476xx.h
+servo_control_rtos\main_old.o: ../Drivers/CMSIS/Include/core_cm4.h
+servo_control_rtos\main_old.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+servo_control_rtos\main_old.o: ../Drivers/CMSIS/Include/cmsis_version.h
+servo_control_rtos\main_old.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
+servo_control_rtos\main_old.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
+servo_control_rtos\main_old.o: ../Drivers/CMSIS/Include/mpu_armv7.h
+servo_control_rtos\main_old.o: ../Drivers/CMSIS/Device/ST/STM32L4xx/Include/system_stm32l4xx.h

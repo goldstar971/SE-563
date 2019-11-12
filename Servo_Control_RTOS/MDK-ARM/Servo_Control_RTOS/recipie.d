@@ -1,0 +1,12 @@
+servo_control_rtos\recipie.o: recipie.c
+servo_control_rtos\recipie.o: ../Inc/recipie.h
+servo_control_rtos\recipie.o: ../Inc/motor.h
+servo_control_rtos\recipie.o: ../Inc/timer.h
+servo_control_rtos\recipie.o: ../Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l476xx.h
+servo_control_rtos\recipie.o: ../Drivers/CMSIS/Include/core_cm4.h
+servo_control_rtos\recipie.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+servo_control_rtos\recipie.o: ../Drivers/CMSIS/Include/cmsis_version.h
+servo_control_rtos\recipie.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
+servo_control_rtos\recipie.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
+servo_control_rtos\recipie.o: ../Drivers/CMSIS/Include/mpu_armv7.h
+servo_control_rtos\recipie.o: ../Drivers/CMSIS/Device/ST/STM32L4xx/Include/system_stm32l4xx.h

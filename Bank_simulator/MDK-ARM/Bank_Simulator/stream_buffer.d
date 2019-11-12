@@ -1,8 +1,8 @@
 bank_simulator\stream_buffer.o: ../Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c
-bank_simulator\stream_buffer.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-bank_simulator\stream_buffer.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+bank_simulator\stream_buffer.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+bank_simulator\stream_buffer.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 bank_simulator\stream_buffer.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
-bank_simulator\stream_buffer.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+bank_simulator\stream_buffer.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 bank_simulator\stream_buffer.o: ../Inc/FreeRTOSConfig.h
 bank_simulator\stream_buffer.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 bank_simulator\stream_buffer.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h

@@ -10,8 +10,9 @@
 
 #define MAX_CMD_LENGTH 11
 
-motor_ctrl motor2;
 motor_ctrl motor1;
+motor_ctrl motor2;
+
 /************************************************
 Purpose: Switch recipe for a motor
 Inputs: motor: the number of the motor whose recipie is to be switched

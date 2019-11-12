@@ -1,9 +1,9 @@
 bank_simulator\tasks.o: ../Middlewares/Third_Party/FreeRTOS/Source/tasks.c
-bank_simulator\tasks.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-bank_simulator\tasks.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+bank_simulator\tasks.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+bank_simulator\tasks.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 bank_simulator\tasks.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
-bank_simulator\tasks.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-bank_simulator\tasks.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+bank_simulator\tasks.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+bank_simulator\tasks.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 bank_simulator\tasks.o: ../Inc/FreeRTOSConfig.h
 bank_simulator\tasks.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 bank_simulator\tasks.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h

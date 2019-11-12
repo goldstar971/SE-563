@@ -1,0 +1,12 @@
+servo_control_rtos\recipe.o: recipe.c
+servo_control_rtos\recipe.o: ../Inc/recipe.h
+servo_control_rtos\recipe.o: ../Inc/motor.h
+servo_control_rtos\recipe.o: ../Inc/timer.h
+servo_control_rtos\recipe.o: ../Drivers/CMSIS/Device/ST/STM32L4xx/Include/stm32l476xx.h
+servo_control_rtos\recipe.o: ../Drivers/CMSIS/Include/core_cm4.h
+servo_control_rtos\recipe.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+servo_control_rtos\recipe.o: ../Drivers/CMSIS/Include/cmsis_version.h
+servo_control_rtos\recipe.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
+servo_control_rtos\recipe.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
+servo_control_rtos\recipe.o: ../Drivers/CMSIS/Include/mpu_armv7.h
+servo_control_rtos\recipe.o: ../Drivers/CMSIS/Device/ST/STM32L4xx/Include/system_stm32l4xx.h

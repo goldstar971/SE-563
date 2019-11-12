@@ -1,8 +1,11 @@
 bank_simulator\job.o: job.c
+bank_simulator\job.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+bank_simulator\job.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+bank_simulator\job.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 bank_simulator\job.o: ../Inc/job.h
 bank_simulator\job.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
-bank_simulator\job.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-bank_simulator\job.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+bank_simulator\job.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+bank_simulator\job.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 bank_simulator\job.o: ../Inc/FreeRTOSConfig.h
 bank_simulator\job.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 bank_simulator\job.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
@@ -49,7 +52,4 @@ bank_simulator\job.o: ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart_ex.
 bank_simulator\job.o: ../Inc/tim.h
 bank_simulator\job.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
 bank_simulator\job.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
-bank_simulator\job.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-bank_simulator\job.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-bank_simulator\job.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 bank_simulator\job.o: ../Inc/usart.h

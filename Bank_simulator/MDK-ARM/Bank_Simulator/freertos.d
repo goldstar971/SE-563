@@ -1,7 +1,7 @@
 bank_simulator\freertos.o: ../Src/freertos.c
 bank_simulator\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
-bank_simulator\freertos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-bank_simulator\freertos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+bank_simulator\freertos.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+bank_simulator\freertos.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 bank_simulator\freertos.o: ../Inc/FreeRTOSConfig.h
 bank_simulator\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 bank_simulator\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h

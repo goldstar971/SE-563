@@ -3,6 +3,7 @@
 #include "main.h"
 #include "motor.h"
 #include "timer.h"
+
 // UART Ports:
 // ===================================================
 // PA.0 = UART4_TX (AF8)   |  PA.1 = UART4_RX (AF8)      
@@ -11,6 +12,7 @@
 char buffer[3];
 extern motor_ctrl motor1;
 extern motor_ctrl motor2;
+
 void UART2_Init(void) {
 	// Enable the clock of USART 1 & 2
 	RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;  // Enable USART 2 clock		
