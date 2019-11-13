@@ -160,7 +160,9 @@ void operate_motor(void *parameter) {
 					}
 					break;
 				case WAIT:	// Wait X Deci Seconds before Executing the Next Command
-					vTaskDelay( pdMS_TO_TICKS( recipe_command&PARAMETER_DETECT * 100 ) );
+					
+					vTaskDelay( pdMS_TO_TICKS( (recipe_command&PARAMETER_DETECT) * 100 ) );
+
 					break;
 				case LOOP:	// Begining of Loop - Times to Itterate
 					// Nested Loop - Set Error State
