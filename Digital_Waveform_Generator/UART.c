@@ -1,10 +1,12 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
 #include "UART.h"
 #include "main.h"
 #include "timer.h"
-
+#include "dac.h"
+extern DAC_state dac_state;
 // UART Ports:
 // ===================================================
 // PA.0 = UART4_TX (AF8)   |  PA.1 = UART4_RX (AF8)      
@@ -159,37 +161,84 @@ void backspace_entered(char *buffer, char *buffer_idx) {
 }
 
 void check_for_command(char *buffer, char *buffer_idx) {
+	int n;
+	char out_buffer[30];
+	//clear screen
+	n=sprintf((char*)&out_buffer,"%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",0x1b,0x5b,'H',0x1b,0x5b,'1',
+	'J',0x1b,0x5b,'3','J',0x1b,0x5b,'2','J');
   if(*buffer_idx == 1) {
         switch(toupper(buffer[0])){
           case 'R':
-            // Change to Ramp
+            dac_state.wave_type='R';
+						n=sprintf(out_buffer,"Waveform: Ramp\n");
+						USART_Write(USART2, (uint8_t*)out_buffer, n);
+						dac_state.sample=0;
             break;
           case 'T':
-            // Change to Triangle
+            dac_state.wave_type='T';
+						dac_state.sample=0;
+						n=sprintf(out_buffer,"Waveform: Triangle\n");
+						USART_Write(USART2, (uint8_t*)out_buffer, n);
             break;
           case 'S':
-            // Change to Sine
+            dac_state.wave_type='S';
+						dac_state.sample=0;
+						n=sprintf(out_buffer,"Waveform: Sine\n");
+						USART_Write(USART2, (uint8_t*)out_buffer, n);
             break;
           case 'A':
-            // Change to Custom
+            dac_state.wave_type='A';
+						n=sprintf(out_buffer,"Waveform: Custom\n");
+						USART_Write(USART2, (uint8_t*)out_buffer, n);
+						dac_state.sample=0;
             break;
           default:
             break;
         }
       }
   else if(*buffer_idx > 1) {
-    switch(toupper(buffer[0])) {
+    float v_value;
+		int   f_val;
+		char val_buff[5];
+		switch(toupper(buffer[0])) {
       case 'F':
-		  // Change Signal Output Frequency
-		  break;
+				strncpy(val_buff,&buffer[1],5);
+				f_val=atoi(val_buff);
+				if(f_val<10){
+					f_val=10;
+				}
+				else if(f_val>1000){
+					f_val=1000;
+				}
+				dac_state.freq=f_val;
+				 // Change Sample and thus signal Output Frequency
+				TIM2->ARR=80e7/(f_val*128);
+				break;
       case 'V':
 		  // Change Output Voltage
-		  break;
+				strncpy(val_buff,&buffer[1],5);
+				v_value=strtof(val_buff,NULL);
+				if(v_value<0){
+					v_value=0.0;
+				}
+				else if(v_value>5){
+					v_value=5.0;
+				}
+				dac_state.vref=5*v_value*(float).01;
+				break;
       default:
-		  break;
+				break;
     }
   }
-  
+  n=sprintf(out_buffer,"Signal Frequency is: %d hz\n",dac_state.freq);
+	USART_Write(USART2, (uint8_t*)out_buffer, n);
+	n=sprintf(out_buffer,"Update Frequency is: %d hz\n",dac_state.freq*128);
+	USART_Write(USART2, (uint8_t*)out_buffer, n);
+	n=sprintf(out_buffer,"Samples per waveform is: %d\n",128);
+	USART_Write(USART2, (uint8_t*)out_buffer, n);
+	n=sprintf(out_buffer,"Vpp: %.3f\n",dac_state.vref);
+	USART_Write(USART2, (uint8_t*)out_buffer, n);
+	
   memset(buffer, 0, sizeof(*buffer));
   USART_Write(USART2, (uint8_t *)"\r\n>", 3);
   *buffer_idx = 0;
