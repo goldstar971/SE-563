@@ -36,6 +36,7 @@ void TIM2_IRQHandler(void){
 				break;
 			case 'A': 
 				cus();
+				break;
 		}
 		//increment sample number, roll over at max samples
 		dac_state.sample++;

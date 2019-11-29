@@ -212,7 +212,7 @@ void check_for_command(char *buffer, char *buffer_idx) {
 				}
 				dac_state.freq=f_val;
 				 // Change Sample and thus signal Output Frequency
-				TIM2->ARR=80e7/(f_val*128);
+				TIM2->ARR=8e7/(f_val*128);
 				break;
       case 'V':
 		  // Change Output Voltage
@@ -224,7 +224,7 @@ void check_for_command(char *buffer, char *buffer_idx) {
 				else if(v_value>5){
 					v_value=5.0;
 				}
-				dac_state.vref=5*v_value*(float).01;
+				dac_state.vref=5*v_value*.01f;
 				break;
       default:
 				break;
