@@ -170,25 +170,25 @@ void check_for_command(char *buffer, char *buffer_idx) {
         switch(toupper(buffer[0])){
           case 'R':
             dac_state.wave_type='R';
-						n=sprintf(out_buffer,"Waveform: Ramp\n");
+						n=sprintf(out_buffer,"\r\nWaveform: Ramp\r\n");
 						USART_Write(USART2, (uint8_t*)out_buffer, n);
 						dac_state.sample=0;
             break;
           case 'T':
             dac_state.wave_type='T';
 						dac_state.sample=0;
-						n=sprintf(out_buffer,"Waveform: Triangle\n");
+						n=sprintf(out_buffer,"\r\nWaveform: Triangle\r\n");
 						USART_Write(USART2, (uint8_t*)out_buffer, n);
             break;
           case 'S':
             dac_state.wave_type='S';
 						dac_state.sample=0;
-						n=sprintf(out_buffer,"Waveform: Sine\n");
+						n=sprintf(out_buffer,"\r\nWaveform: Sine\r\n");
 						USART_Write(USART2, (uint8_t*)out_buffer, n);
             break;
           case 'A':
             dac_state.wave_type='A';
-						n=sprintf(out_buffer,"Waveform: Custom\n");
+						n=sprintf(out_buffer,"\r\nWaveform: Custom\r\n");
 						USART_Write(USART2, (uint8_t*)out_buffer, n);
 						dac_state.sample=0;
             break;
@@ -230,13 +230,13 @@ void check_for_command(char *buffer, char *buffer_idx) {
 				break;
     }
   }
-  n=sprintf(out_buffer,"Signal Frequency is: %d hz\n",dac_state.freq);
+  n=sprintf(out_buffer,"Signal Frequency is: %d hz\r\n",dac_state.freq);
 	USART_Write(USART2, (uint8_t*)out_buffer, n);
-	n=sprintf(out_buffer,"Update Frequency is: %d hz\n",dac_state.freq*128);
+	n=sprintf(out_buffer,"Update Frequency is: %d hz\r\n",dac_state.freq*128);
 	USART_Write(USART2, (uint8_t*)out_buffer, n);
-	n=sprintf(out_buffer,"Samples per waveform is: %d\n",128);
+	n=sprintf(out_buffer,"Samples per waveform is: %d\r\n",128);
 	USART_Write(USART2, (uint8_t*)out_buffer, n);
-	n=sprintf(out_buffer,"Vpp: %.3f\n",dac_state.vref);
+	n=sprintf(out_buffer,"Vpp: %.3f\r\n",dac_state.vref);
 	USART_Write(USART2, (uint8_t*)out_buffer, n);
 	
   memset(buffer, 0, sizeof(*buffer));

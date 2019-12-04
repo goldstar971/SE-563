@@ -4,6 +4,6 @@
 
 
 void TIM_Init(TIM_TypeDef *timx);
-
+void TIM2_IRQHandler(void);
 
 #endif /* __STM32L476G_DISCOVERY_TIMER_H */

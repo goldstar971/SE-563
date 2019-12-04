@@ -16,6 +16,7 @@ void TIM_Init(TIM_TypeDef * TIMx){
 	TIMx-> CR1=0x84; //disable timer and set it to count up
 	TIMx->CCER &=~0x11;//disable channels 1 and 2
 	TIMx->CCER |=TIM_CCER_CC1E; //enable timer channel 1
+	TIM2->ARR=8e7/(100*128);
 	TIMx->DIER |=1; //update interrupts enabled
 	TIMx->EGR |=0x1;//create update event
 	TIMx->CR1|=TIM_CR1_CEN; //start timer 
