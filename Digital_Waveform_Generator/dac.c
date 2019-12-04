@@ -39,39 +39,27 @@ void init_dac_GPIO(){
 }
 	
 float sine(char intermediate,int sample){
-  	int normalized_phase=sample%128;
-	float quadrant=normalized_phase/(NUM_OF_SAMPLES-1.0f);
-	int actual_index=normalized_phase%32;
-	float function_value;
-	float range=dac_state.vref*DIVS_PER_VOLT;
-	//get value of sine function at that point depending on quadrant
-	if(quadrant<=.25f){
-		function_value=(sine_values[actual_index]);
-	}
-	else if(quadrant<=.50f){
-		function_value=(sine_values[31-actual_index]);
-	}
-	else if(quadrant<=.75f){
-		function_value=(-sine_values[actual_index]);
-	}
-	else if(quadrant<=1.0f){
-		function_value=(-sine_values[31-actual_index]);		
-	}
+  int normalized_phase=sample%128;
+	float dac_value;
+	float function_value=sine_values[normalized_phase];		
+	float actual_ref=dac_state.vref/5;
 	//if being called from another math function
+	dac_value=(function_value/actual_ref)*819;
 	if(intermediate==1){
-		return function_value;
+		return (uint32_t) dac_value;
 	}
 	else{
-		DAC1->DHR12R2=(uint32_t)((function_value+2.5f)*range+.5f);//round up
+		
+		DAC1->DHR12R2=(uint32_t)dac_value;//round up
 		return 0;
 	}
 }
 
 void cus(void){
-	float range=dac_state.vref*DIVS_PER_VOLT;
-	DAC1->DHR12R2=(uint32_t)((sine(1,dac_state.sample)+sine(1,dac_state.sample*3)/3+
-	sine(1,dac_state.sample*5)/5+sine(1,dac_state.sample*7)/7+sine(1,dac_state.sample*9)/9
-	+2.5f)*range+.5f); //round up
+	
+	uint32_t test=(sine(1,dac_state.sample)+sine(1,dac_state.sample*3)/3+
+	sine(1,dac_state.sample*5)/5+sine(1,dac_state.sample*7)/7+sine(1,dac_state.sample*9)/9); //round up
+	DAC1->DHR12R2=test;
 }
 
 void triangle(void){
