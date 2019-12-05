@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Mon Dec 02 17:39:51 2019
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Dec 05 01:23:30 2019
 <BR><P>
 <H3>Maximum Stack Usage =        604 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -153,9 +153,9 @@ Global Symbols
 
 <P><STRONG><a name="[ea]"></a>__scatterload_null</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __scatter.o(!!!scatter), UNUSED)
 
-<P><STRONG><a name="[eb]"></a>__decompress</STRONG> (Thumb, 90 bytes, Stack size unknown bytes, __dczerorl2.o(!!dczerorl2), UNUSED)
+<P><STRONG><a name="[eb]"></a>__decompress</STRONG> (Thumb, 100 bytes, Stack size unknown bytes, __dclz77c.o(!!dclz77c), UNUSED)
 
-<P><STRONG><a name="[ec]"></a>__decompress1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __dczerorl2.o(!!dczerorl2), UNUSED)
+<P><STRONG><a name="[ec]"></a>__decompress2</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __dclz77c.o(!!dclz77c), UNUSED)
 
 <P><STRONG><a name="[ed]"></a>__scatterload_zeroinit</STRONG> (Thumb, 28 bytes, Stack size unknown bytes, __scatter_zi.o(!!handler_zi), UNUSED)
 
@@ -291,8 +291,8 @@ Global Symbols
 <P><STRONG><a name="[10b]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[7a]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8 + Unknown Stack Size
-<LI>Call Chain = __rt_entry_main &rArr; main &rArr; UART2_Init
+<BR><BR>[Stack]<UL><LI>Max Depth = 12 + Unknown Stack Size
+<LI>Call Chain = __rt_entry_main &rArr; main &rArr; TIM_Init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
@@ -1051,8 +1051,8 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[29]"></a>TIM2_IRQHandler</STRONG> (Thumb, 96 bytes, Stack size 8 bytes, timer.o(i.TIM2_IRQHandler))
-<BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = TIM2_IRQHandler &rArr; cus &rArr; sine
+<P><STRONG><a name="[29]"></a>TIM2_IRQHandler</STRONG> (Thumb, 90 bytes, Stack size 8 bytes, timer.o(i.TIM2_IRQHandler))
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = TIM2_IRQHandler &rArr; cus
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;triangle
 <LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sine
@@ -1061,8 +1061,10 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32l476xx.o(RESET)
 </UL>
-<P><STRONG><a name="[d3]"></a>TIM_Init</STRONG> (Thumb, 66 bytes, Stack size 0 bytes, timer.o(i.TIM_Init))
-<BR><BR>[Called By]<UL><LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<P><STRONG><a name="[d3]"></a>TIM_Init</STRONG> (Thumb, 110 bytes, Stack size 12 bytes, timer.o(i.TIM_Init))
+<BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = TIM_Init
+</UL>
+<BR>[Called By]<UL><LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
 <P><STRONG><a name="[bc]"></a>UART2_GPIO_Init</STRONG> (Thumb, 106 bytes, Stack size 0 bytes, uart.o(i.UART2_GPIO_Init))
@@ -1203,7 +1205,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[33]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART2_IRQHandler
 </UL>
 
-<P><STRONG><a name="[bf]"></a>check_for_command</STRONG> (Thumb, 572 bytes, Stack size 128 bytes, uart.o(i.check_for_command))
+<P><STRONG><a name="[bf]"></a>check_for_command</STRONG> (Thumb, 574 bytes, Stack size 128 bytes, uart.o(i.check_for_command))
 <BR><BR>[Stack]<UL><LI>Max Depth = 596 + Unknown Stack Size
 <LI>Call Chain = check_for_command &rArr; __hardfp_strtof &rArr; __strtof_int &rArr; __strtod_int &rArr; _local_sscanf &rArr; _scanf_real &rArr; _scanf_really_real &rArr; _fp_value &rArr; _btod_etento &rArr; _btod_emul &rArr; _e2e
 </UL>
@@ -1221,10 +1223,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[33]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART2_IRQHandler
 </UL>
 
-<P><STRONG><a name="[ba]"></a>cus</STRONG> (Thumb, 166 bytes, Stack size 4 bytes, dac.o(i.cus))
-<BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = cus &rArr; sine
-</UL>
-<BR>[Calls]<UL><LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sine
+<P><STRONG><a name="[ba]"></a>cus</STRONG> (Thumb, 60 bytes, Stack size 8 bytes, dac.o(i.cus))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = cus
 </UL>
 <BR>[Called By]<UL><LI><a href="#[29]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM2_IRQHandler
 </UL>
@@ -1246,7 +1246,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[7b]"></a>main</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = main &rArr; UART2_Init
+<BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = main &rArr; TIM_Init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_dac_GPIO
 <LI><a href="#[d4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init_dac
@@ -1257,18 +1257,15 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry_main
 </UL>
 
-<P><STRONG><a name="[b9]"></a>ramp</STRONG> (Thumb, 76 bytes, Stack size 0 bytes, dac.o(i.ramp))
+<P><STRONG><a name="[b9]"></a>ramp</STRONG> (Thumb, 52 bytes, Stack size 0 bytes, dac.o(i.ramp))
 <BR><BR>[Called By]<UL><LI><a href="#[29]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM2_IRQHandler
 </UL>
 
-<P><STRONG><a name="[b7]"></a>sine</STRONG> (Thumb, 234 bytes, Stack size 8 bytes, dac.o(i.sine))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = sine
-</UL>
-<BR>[Called By]<UL><LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cus
-<LI><a href="#[29]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM2_IRQHandler
+<P><STRONG><a name="[b7]"></a>sine</STRONG> (Thumb, 52 bytes, Stack size 0 bytes, dac.o(i.sine))
+<BR><BR>[Called By]<UL><LI><a href="#[29]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM2_IRQHandler
 </UL>
 
-<P><STRONG><a name="[b8]"></a>triangle</STRONG> (Thumb, 146 bytes, Stack size 0 bytes, dac.o(i.triangle))
+<P><STRONG><a name="[b8]"></a>triangle</STRONG> (Thumb, 52 bytes, Stack size 0 bytes, dac.o(i.triangle))
 <BR><BR>[Called By]<UL><LI><a href="#[29]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM2_IRQHandler
 </UL>
 

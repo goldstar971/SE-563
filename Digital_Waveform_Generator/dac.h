@@ -2,6 +2,9 @@
 #define __DAC_H
 #include "stm32l476xx.h"
 
+#define function(array,value,reference) ((uint32_t) array[value]*20475.0/reference)
+
+
 typedef struct{
 	int freq;
 	int sample;
@@ -14,7 +17,7 @@ typedef struct{
 
 void init_dac(void);
 
-float sine(char intermediate,int sample);
+void sine(void);
 
 void cus(void);
 

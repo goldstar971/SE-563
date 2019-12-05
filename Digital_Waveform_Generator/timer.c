@@ -27,7 +27,7 @@ void TIM2_IRQHandler(void){
 	//update wave depending on wave type
 		switch(dac_state.wave_type){
 			case 'S': 
-				sine(0,dac_state.sample);
+				sine();
 				break;
 			case 'T': 
 				triangle();

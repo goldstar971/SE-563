@@ -166,6 +166,7 @@ void check_for_command(char *buffer, char *buffer_idx) {
 	//clear screen
 	n=sprintf((char*)&out_buffer,"%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",0x1b,0x5b,'H',0x1b,0x5b,'1',
 	'J',0x1b,0x5b,'3','J',0x1b,0x5b,'2','J');
+	USART_Write(USART2, (uint8_t*)out_buffer, n);
   if(*buffer_idx == 1) {
         switch(toupper(buffer[0])){
           case 'R':
@@ -204,15 +205,11 @@ void check_for_command(char *buffer, char *buffer_idx) {
       case 'F':
 				strncpy(val_buff,&buffer[1],5);
 				f_val=atoi(val_buff);
-				if(f_val<10){
-					f_val=10;
-				}
-				else if(f_val>1000){
-					f_val=1000;
-				}
+
 				dac_state.freq=f_val;
 				 // Change Sample and thus signal Output Frequency
 				TIM2->ARR=8e7/(f_val*128);
+				TIM2->EGR|=1;
 				break;
       case 'V':
 		  // Change Output Voltage
@@ -221,8 +218,8 @@ void check_for_command(char *buffer, char *buffer_idx) {
 				if(v_value<0){
 					v_value=0.0;
 				}
-				else if(v_value>5){
-					v_value=5.0;
+				else if(v_value>100){
+					v_value=100;
 				}
 				dac_state.vref=5*v_value*.01f;
 				break;
